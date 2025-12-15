@@ -1,0 +1,328 @@
+/* ======================================================================= */
+/* AgriSense – Core Theme                                                   */
+/* Color system, typography, layout primitives                              */
+/* ======================================================================= */
+:root {
+  --green-600: #1d7a36;
+  --green-500: #279a44;
+  --green-100: #e7f5eb;
+  --brown-500: #8b5e34;
+  --blue-500: #2b7bd8;
+  --blue-100: #e8f0fe;
+  --bg: #f7faf8;
+  --surface: #ffffff;
+  --text: #1b1b1b;
+  --muted: #5a5a5a;
+  --shadow: 0 8px 20px rgba(0,0,0,0.08);
+  --radius: 16px;
+}
+
+/* Reset and base */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Devanagari", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 0 !important;
+  border: 0 !important;
+  height: 1px !important; 
+  width: 1px !important; 
+  overflow: hidden;
+}
+
+/* ======================================================================= */
+/* Header                                                                   */
+/* ======================================================================= */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid #eaeaea;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo { font-size: 24px; }
+.brand-text .name {
+  font-weight: 700;
+  color: var(--green-600);
+  font-size: 18px;
+}
+.brand-text .tagline {
+  font-size: 12px;
+  color: var(--muted);
+}
+.header-actions { display: flex; gap: 8px; }
+
+/* ======================================================================= */
+/* Main layout                                                              */
+/* ======================================================================= */
+.main { padding: 16px; padding-bottom: 88px; }
+.view { display: none; }
+.view.active { display: block; }
+
+.hero {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.hero-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.feature-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.feature-card {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 12px;
+  border: none;
+}
+.feature-card:active { transform: scale(0.98); }
+.feature-card .icon {
+  width: 40px; height: 40px;
+  color: var(--green-600);
+}
+.feature-card .icon svg { width: 100%; height: 100%; fill: currentColor; }
+.feature-title { font-weight: 600; font-size: 14px; }
+
+/* ======================================================================= */
+/* Buttons                                                                  */
+/* ======================================================================= */
+.primary-btn, .secondary-btn, .ghost-btn, .nav-btn {
+  font-size: 16px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: none;
+}
+.primary-btn {
+  background: var(--green-600);
+  color: #fff;
+}
+.primary-btn:focus-visible,
+.secondary-btn:focus-visible,
+.ghost-btn:focus-visible,
+.nav-btn:focus-visible {
+  outline: 3px solid var(--blue-500);
+  outline-offset: 2px;
+}
+.secondary-btn {
+  background: var(--blue-100);
+  color: var(--blue-500);
+}
+.ghost-btn {
+  background: transparent;
+  color: var(--green-600);
+  border: 1px solid #eaeaea;
+}
+
+/* ======================================================================= */
+/* Cards & grids                                                            */
+/* ======================================================================= */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.section-title {
+  font-weight: 700;
+  margin: 12px 4px;
+}
+.row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.field .label { font-size: 12px; color: var(--muted); }
+.field .value { font-size: 14px; font-weight: 600; }
+.actions { margin-top: 8px; }
+
+.reco-card {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+}
+.reco-icon {
+  width: 48px; height: 48px;
+  background: var(--green-100);
+  color: var(--green-600);
+  border-radius: 12px;
+  display: grid; place-items: center;
+}
+.trend {
+  font-weight: 700;
+}
+.score {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ======================================================================= */
+/* Weather timeline & alerts                                                */
+/* ======================================================================= */
+.timeline {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 120px;
+  overflow-x: auto;
+  gap: 8px;
+}
+.day-card {
+  min-width: 110px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 8px;
+  text-align: center;
+}
+.alert-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.alert-card {
+  border-left: 6px solid var(--blue-500);
+  background: var(--blue-100);
+  padding: 10px;
+  border-radius: 12px;
+}
+.alert-card.warning { border-left-color: #f5a623; background: #fff6e6; }
+.alert-card.danger { border-left-color: #d83b2b; background: #ffeaea; }
+
+/* ======================================================================= */
+/* Accordion                                                                */
+/* ======================================================================= */
+.accordion { display: grid; gap: 8px; }
+.acc-header {
+  width: 100%;
+  text-align: left;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  border: 1px solid #eaeaea;
+  font-weight: 600;
+}
+.acc-panel {
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid #eee;
+  border-radius: 12px;
+}
+
+/* ======================================================================= */
+/* Market                                                                   */
+/* ======================================================================= */
+.tips, .markets { list-style: none; padding: 0; margin: 0; }
+.tips li, .markets li {
+  padding: 8px 10px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  margin-bottom: 6px;
+}
+
+/* ======================================================================= */
+/* Navigation                                                               */
+/* ======================================================================= */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  padding: 10px;
+  background: var(--surface);
+  border-top: 1px solid #eaeaea;
+}
+.nav-btn {
+  background: #f6f6f6;
+}
+.nav-btn.active {
+  background: var(--green-100);
+  color: var(--green-600);
+  font-weight: 700;
+}
+
+/* ======================================================================= */
+/* Dialog & Toast                                                           */
+/* ======================================================================= */
+.dialog {
+  border: none;
+  border-radius: var(--radius);
+  padding: 0;
+}
+.dialog::backdrop { background: rgba(0,0,0,.25); }
+.dialog form { padding: 16px; }
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 74px;
+  background: #1b1b1b;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-6px);
+}
+
+/* ======================================================================= */
+/* Responsive                                                               */
+/* ======================================================================= */
+@media (min-width: 560px) {
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+  .feature-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (min-width: 840px) {
+  .main { max-width: 980px; margin: 0 auto; }
+  .row { grid-template-columns: repeat(4, 1fr); }
+  .card-grid { grid-template-columns: repeat(3, 1fr); }
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questionnaire - AgriSense Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span>🌾</span> AgriSense Admin</div>
+  </div>
+  <div class="page-wrap">
+    <aside class="sidebar">
+      <div class="brand"><span>🌾</span> AgriSense Admin</div>
+      <nav class="nav">
+        <a href="admin_dashboard.html">🏠 Dashboard</a>
+        <a href="farmers_add.html">👨‍🌾 Add Farmers</a>
+        <a href="policies_post.html">📜 Post New Policy</a>
+        <a href="policies_manage.html">🗂️ Manage Policies</a>
+        <a href="market_vegetables.html">🥕 Market Prices (Vegetables)</a>
+        <a href="market_tools_fertilizers.html">🛠️ Market Prices (Tools & Fertilizers)</a>
+        <a href="weather.html">☀️ Weather (7 Days)</a>
+        <a href="questionnaire.html">❓ Questionnaire</a>
+        <a href="messages.html">✉️ Messages</a>
+        <a href="../Login Code/Gov/admin_login.html">🚪 Log Out</a>
+      </nav>
+    </aside>
+    <main class="content">
+      <div class="header">
+        <h1>Questionnaire</h1>
+        <a class="btn btn-outline" href="admin_dashboard.html">Back</a>
+      </div>
+      <section class="card tile">
+        <form class="form" id="questionForm">
+          <input class="input" name="question" placeholder="Enter question" required>
+          <div class="row">
+            <input class="input" name="optionA" placeholder="Option A" required>
+            <input class="input" name="optionB" placeholder="Option B" required>
+          </div>
+          <div class="row">
+            <input class="input" name="optionC" placeholder="Option C">
+            <input class="input" name="optionD" placeholder="Option D">
+          </div>
+          <div>
+            <button class="btn" type="submit">Add Question</button>
+          </div>
+        </form>
+      </section>
+      <section class="card tile" style="margin-top:16px;">
+        <h3>Questions</h3>
+        <ul id="questionList" style="list-style:none; padding-left:0; display:grid; gap:10px;">
+          <li class="card tile"><strong>Preferred irrigation method?</strong><span class="muted">A: Drip • B: Flood • C: Sprinkler</span></li>
+        </ul>
+      </section>
+    </main>
+  </div>
+  <script>
+    document.getElementById('questionForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const fd = new FormData(this);
+      const li = document.createElement('li');
+      const opts = ['A','B','C','D'].map(k => fd.get('option'+k)).filter(Boolean).map((v,i) => String.fromCharCode(65+i)+': '+v).join(' • ');
+      li.className = 'card tile';
+      li.innerHTML = `<strong>${fd.get('question')}</strong><span class="muted">${opts}</span>`;
+      document.getElementById('questionList').prepend(li);
+      this.reset();
+    });
+  </script>
+</body>
+</html>

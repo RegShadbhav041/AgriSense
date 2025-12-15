@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post Policy - AgriSense Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span>🌾</span> AgriSense Admin</div>
+  </div>
+  <div class="page-wrap">
+    <aside class="sidebar">
+      <div class="brand"><span>🌾</span> AgriSense Admin</div>
+      <nav class="nav">
+        <a href="admin_dashboard.html">🏠 Dashboard</a>
+        <a href="farmers_add.html">👨‍🌾 Add Farmers</a>
+        <a href="policies_post.html">📜 Post New Policy</a>
+        <a href="policies_manage.html">🗂️ Manage Policies</a>
+        <a href="market_vegetables.html">🥕 Market Prices (Vegetables)</a>
+        <a href="market_tools_fertilizers.html">🛠️ Market Prices (Tools & Fertilizers)</a>
+        <a href="weather.html">☀️ Weather (7 Days)</a>
+        <a href="questionnaire.html">❓ Questionnaire</a>
+        <a href="messages.html">✉️ Messages</a>
+        <a href="../Login Code/Gov/admin_login.html">🚪 Log Out</a>
+      </nav>
+    </aside>
+    <main class="content">
+      <div class="header">
+        <h1>Post New Policy</h1>
+        <a class="btn btn-outline" href="policies_manage.html">Manage Policies</a>
+      </div>
+      <section class="card tile">
+        <form class="form" id="policyForm">
+          <input class="input" name="title" placeholder="Policy Title" required>
+          <div class="row">
+            <input class="input" type="date" name="effectiveDate" required>
+            <select class="select" name="category" required>
+              <option value="">Category</option>
+              <option>Subsidy</option>
+              <option>Regulation</option>
+              <option>Training</option>
+              <option>Market Access</option>
+            </select>
+          </div>
+          <textarea class="textarea" name="content" placeholder="Policy Content" required></textarea>
+          <div>
+            <button class="btn" type="submit">Publish Policy</button>
+          </div>
+        </form>
+      </section>
+      <section class="card tile" style="margin-top:16px;">
+        <h3>Preview</h3>
+        <div id="preview" class="muted">Fill the form to preview here...</div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const form = document.getElementById('policyForm');
+    const preview = document.getElementById('preview');
+    form.addEventListener('input', () => {
+      const fd = new FormData(form);
+      preview.innerHTML = `
+        <h4>${fd.get('title') || 'Untitled Policy'}</h4>
+        <p class="muted">${fd.get('category') || 'Category'} • Effective ${fd.get('effectiveDate') || 'Date'}</p>
+        <p>${(fd.get('content') || '').replace(/\\n/g,'<br>')}</p>
+      `;
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Policy published (demo). Connect to backend to persist.');
+      form.reset();
+      preview.textContent = 'Fill the form to preview here...';
+    });
+  </script>
+</body>
+</html>

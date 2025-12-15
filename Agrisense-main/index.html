@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriSense | Smart Farming for Smarter Policy</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="background-grid">
+  <header class="hero">
+    <div>
+      <h1 id="titleText">AgriSense 🌱</h1>
+      <p id="subtitleText">Smart Farming for Smarter Policy</p>
+    </div>
+    <div class="hero-actions">
+      <div class="quick-actions-nav">
+        <button id="navLocateBtn" class="secondary-btn mini-btn">📍 Crop Rec</button>
+        <button id="navSurveyBtn" class="secondary-btn mini-btn">🧾 Survey</button>
+        <button id="navPollBtn" class="secondary-btn mini-btn">🗳️ Polls</button>
+        <button id="navAnalyticsBtn" class="secondary-btn mini-btn">📊 Analytics</button>
+      </div>
+      <a class="secondary-btn mini-btn" href="pages/subsidy.html">💰 Subsidy</a>
+      <a class="secondary-btn mini-btn" href="pages/gov-info.html">🏛 Gov Info</a>
+      <button id="languageBtn" class="secondary-btn">नेपाली / English</button>
+      <div class="credit-pill">
+        <span id="creditsLabel">Credits</span>: <span id="creditCount">0</span> pts
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="globalWarning" class="banner-warning" role="alert"></div>
+
+    <section class="card" id="locationSection">
+      <h2 id="locHeader">📍 Location-Based Crop Recommendation</h2>
+      <p id="locSubtext">Use your location and local weather to get the best crops. You can also get recommendations independently by selecting soil and moisture.</p>
+      <div class="form-grid">
+        <label id="soilLabel">Soil Type
+          <select id="soilType">
+            <option value="">Select soil</option>
+            <option>Clay</option>
+            <option>Sandy</option>
+            <option>Loam</option>
+          </select>
+        </label>
+        <label id="moistureLabel">Moisture Level
+          <select id="moistureLevel">
+            <option value="">Select moisture</option>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
+        </label>
+        <label id="landLabel">Land Size (ha)
+          <input type="number" id="landSize" placeholder="e.g., 1.5">
+        </label>
+        <label id="elevLabel">Elevation (m) <span class="hint" id="elevHint">(optional)</span>
+          <input type="number" id="elevation" placeholder="e.g., 1200">
+        </label>
+      </div>
+      <div class="status-row">
+        <button id="locateBtn" class="primary-btn">📍 <span id="btnLocateText">Get My Location & Fetch Weather</span></button>
+        <button id="recommendBtn" class="primary-btn">🧠 <span id="btnRecommendText">Recommend Crop Now</span></button>
+        <button id="manualLocationBtn" class="ghost-btn mini-btn"><span id="btnManualLocationText">Manual Location</span></button>
+      </div>
+      <div id="locationStatus" class="muted"></div>
+      <div id="cropResults" class="results"></div>
+    </section>
+
+    <section class="card" id="weatherSection">
+      <h2 id="forecastHeader">☁️ Next 5-Day Weather Forecast</h2>
+      <p class="section-description">Real-time weather data helps farmers plan planting schedules and prepare for climate variations. This data also contributes to regional climate pattern analysis for policy makers.</p>
+      <div id="forecastList" class="forecast-grid"></div>
+      <div id="weatherWarnings" class="warnings"></div>
+    </section>
+
+    <section class="card" id="insightSection">
+      <h2>🔮 AI-Powered Smart Insights</h2>
+      <p class="section-description">Get personalized insights based on your farm conditions, weather patterns, and regional data. These insights help optimize farming decisions and contribute to agricultural intelligence for policy development.</p>
+      <div id="insightContent" class="results">
+        <div class="muted">Run a recommendation to see localized insights.</div>
+      </div>
+    </section>
+
+    <section class="card notices-section">
+      <h2 id="noticesHeader">📢 Government Notices & Policy Updates</h2>
+      <p class="section-description">Stay informed about agricultural policies, subsidies, and government initiatives. Your participation helps shape evidence-based agricultural policies.</p>
+      <div id="noticesList" class="notices-grid"></div>
+    </section>
+
+    <section class="card" id="surveySection" style="display: none;">
+      <h2 id="surveyHeader">📋 Agricultural Policy Survey</h2>
+      <p id="surveySubtext">Your responses help government agencies understand farmer needs and challenges. This data directly influences agricultural policy decisions, subsidy allocations, and support programs. Complete the survey to earn credits and contribute to smarter policy-making.</p>
+      <form id="surveyForm">
+        <div class="question" data-key="q1">1. Land size adequate?</div>
+        <div class="options">
+          <label><input type="radio" name="q1" value="yes" required>Yes</label>
+          <label><input type="radio" name="q1" value="no">No</label>
+        </div>
+        <div class="question" data-key="q2">2. Do you have water availability?</div>
+        <div class="options">
+          <label><input type="radio" name="q2" value="yes" required>Yes</label>
+          <label><input type="radio" name="q2" value="no">No</label>
+        </div>
+        <div class="question" data-key="q3">3. Do you use fertilizer?</div>
+        <div class="options">
+          <label><input type="radio" name="q3" value="yes" required>Yes</label>
+          <label><input type="radio" name="q3" value="no">No</label>
+        </div>
+        <div class="question" data-key="q4">4. Years of experience above 3?</div>
+        <div class="options">
+          <label><input type="radio" name="q4" value="yes" required>Yes</label>
+          <label><input type="radio" name="q4" value="no">No</label>
+        </div>
+        <div class="question" data-key="q5">5. Preferred crop available locally?</div>
+        <div class="options">
+          <label><input type="radio" name="q5" value="yes" required>Yes</label>
+          <label><input type="radio" name="q5" value="no">No</label>
+        </div>
+        <div class="question" data-key="q6">6. Facing pests or disease?</div>
+        <div class="options">
+          <label><input type="radio" name="q6" value="yes" required>Yes</label>
+          <label><input type="radio" name="q6" value="no">No</label>
+        </div>
+        <button type="submit" class="primary-btn">Submit Survey & Earn Credits</button>
+      </form>
+      <div id="surveyStatus" class="success"></div>
+    </section>
+
+    <section class="card" id="pollSection">
+      <h2 id="pollHeader">🗳️ Farmer Voice - Community Polls</h2>
+      <p class="section-description">Create polls and vote on agricultural issues. Your collective voice helps policy makers understand farmer priorities and concerns. Poll results are aggregated for policy analysis.</p>
+      <div class="form-grid narrow">
+        <label id="pollQuestionLabel">Poll Question
+          <input type="text" id="pollQuestion" placeholder="e.g., Increase fertilizer subsidy?">
+        </label>
+        <label>Option 1
+          <input type="text" id="pollOpt1" placeholder="Yes">
+        </label>
+        <label>Option 2
+          <input type="text" id="pollOpt2" placeholder="No">
+        </label>
+        <label>Option 3
+          <input type="text" id="pollOpt3" placeholder="Maybe">
+        </label>
+        <label>Option 4
+          <input type="text" id="pollOpt4" placeholder="Leave blank if not needed">
+        </label>
+      </div>
+      <div class="status-row">
+        <button id="createPollBtn" class="primary-btn mini-btn">Create Poll</button>
+        <div id="pollStatus" class="muted"></div>
+      </div>
+      <div id="pollList" class="results"></div>
+    </section>
+
+    <section class="card" id="yieldSection">
+      <h2>📈 Yield Estimator & Production Planning</h2>
+      <p class="section-description">Estimate your crop yield based on land size and crop type. This helps with production planning and contributes to regional productivity data for agricultural planning.</p>
+      <div class="form-grid">
+        <label>Crop
+          <select id="yieldCrop">
+            <option>Rice</option>
+            <option>Maize</option>
+            <option>Wheat</option>
+            <option>Millet</option>
+            <option>Vegetables</option>
+          </select>
+        </label>
+        <label>Land Size (ha)
+          <input type="number" id="yieldLand" placeholder="e.g., 1.0">
+        </label>
+        <label>Expected yield/ha (t)
+          <input type="number" step="0.1" id="yieldPerHa" placeholder="Auto-fill default">
+        </label>
+      </div>
+      <div class="status-row">
+        <button id="yieldBtn" class="primary-btn mini-btn">Estimate Yield</button>
+        <div id="yieldStatus" class="muted"></div>
+      </div>
+    </section>
+
+    <section class="card" id="marketSection">
+      <h2>🛰 Real-Time Market & Input Board</h2>
+      <p class="section-description">Access current market prices for produce and agricultural inputs. Market data helps farmers make informed selling decisions and provides insights for price stabilization policies.</p>
+      <div class="market-grid" id="marketList"></div>
+      <div class="market-summary" id="marketSummary"></div>
+    </section>
+
+    <section class="card" id="analyticsSection">
+      <h2>📊 Policy Intelligence Dashboard</h2>
+      <p class="section-description">Real-time analytics and data visualization for evidence-informed agricultural policy. This dashboard transforms farmer data into actionable insights for smarter policy decisions, resource allocation, and intergovernmental coordination.</p>
+      
+      <div class="analytics-tabs">
+        <button class="analytics-tab active" data-tab="trends">Crop Trends</button>
+        <button class="analytics-tab" data-tab="productivity">Regional Productivity</button>
+        <button class="analytics-tab" data-tab="behavior">Farmer Behavior</button>
+        <button class="analytics-tab" data-tab="governance">Governance Insights</button>
+      </div>
+
+      <div id="trendsTab" class="analytics-content active">
+        <h3>🌾 Crop Recommendation Trends & Patterns</h3>
+        <p class="tab-description">Analyze crop recommendation patterns across regions. This data helps identify popular crops, seasonal trends, and regional preferences for targeted agricultural support programs.</p>
+        <div id="cropTrendsChart" class="chart-container">
+          <canvas id="cropTrendsCanvas"></canvas>
+        </div>
+        <div class="trends-summary" id="trendsSummary"></div>
+      </div>
+
+      <div id="productivityTab" class="analytics-content">
+        <h3>📍 Regional Productivity & Geographic Analysis</h3>
+        <p class="tab-description">Visualize agricultural productivity patterns across different elevation zones. This geographic analysis supports regional development policies and resource allocation strategies.</p>
+        <div class="charts-row">
+          <div class="chart-container">
+            <canvas id="productivityPieChart" width="300" height="300"></canvas>
+            <p class="chart-label">Regional Distribution</p>
+          </div>
+          <div class="chart-container">
+            <canvas id="productivityLineChart" width="400" height="300"></canvas>
+            <p class="chart-label">Productivity Trends Over Time</p>
+          </div>
+        </div>
+        <div id="productivityMap" class="map-container">
+          <div class="productivity-grid" id="productivityGrid"></div>
+        </div>
+        <div class="productivity-stats" id="productivityStats"></div>
+      </div>
+
+      <div id="behaviorTab" class="analytics-content">
+        <h3>👥 Farmer Engagement & Behavior Analytics</h3>
+        <p class="tab-description">Track farmer engagement patterns, survey participation, and app usage. Understanding farmer behavior helps design better agricultural programs and improve service delivery.</p>
+        <div class="charts-row">
+          <div class="chart-container">
+            <canvas id="behaviorPieChart" width="300" height="300"></canvas>
+            <p class="chart-label">Behavior Type Distribution</p>
+          </div>
+          <div class="chart-container">
+            <canvas id="behaviorBarChart" width="400" height="300"></canvas>
+            <p class="chart-label">Engagement Levels</p>
+          </div>
+        </div>
+        <div class="behavior-cards" id="behaviorCards"></div>
+        <div class="behavior-insights" id="behaviorInsights"></div>
+      </div>
+
+      <div id="governanceTab" class="analytics-content">
+        <h3>🏛️ Evidence-Informed Policy Dashboard</h3>
+        <p class="tab-description">Comprehensive governance metrics and insights derived from farmer data. This dashboard enables data-driven policy decisions, targeted subsidies, and improved coordination between government agencies.</p>
+        <div class="charts-row">
+          <div class="chart-container">
+            <canvas id="governancePieChart" width="300" height="300"></canvas>
+            <p class="chart-label">Data Collection Sources</p>
+          </div>
+          <div class="chart-container">
+            <canvas id="governanceBarChart" width="400" height="300"></canvas>
+            <p class="chart-label">Governance Metrics</p>
+          </div>
+        </div>
+        <div class="governance-dashboard" id="governanceDashboard"></div>
+        <div class="subsidy-targeting" id="subsidyTargeting"></div>
+        <div class="coordination-insights" id="coordinationInsights"></div>
+      </div>
+    </section>
+
+    <section class="card" id="policyImpactSection">
+      <h2>🎯 Your Data, Smarter Policies</h2>
+      <div class="impact-grid">
+        <div class="impact-card">
+          <div class="impact-icon">📊</div>
+          <h3>Data-Driven Decisions</h3>
+          <p>Your farm data contributes to evidence-based agricultural policies that benefit all farmers.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon">🎁</div>
+          <h3>Targeted Subsidies</h3>
+          <p>Policy makers use aggregated data to allocate subsidies where they're needed most.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon">🤝</div>
+          <h3>Better Coordination</h3>
+          <p>Inter-agency coordination improves when data is shared and visualized effectively.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-icon">🌾</div>
+          <h3>Regional Planning</h3>
+          <p>Crop trends and productivity data inform regional agricultural development plans.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="offlineTips">
+      <h2>📡 Smart Farming Tips & Offline Access</h2>
+      <ul>
+        <li><strong>Offline Mode:</strong> Save soil/moisture choices; app works offline except GPS & weather API calls.</li>
+        <li><strong>Field Reference:</strong> Download subsidy and government info pages for reference in the field.</li>
+        <li><strong>Climate Adaptation:</strong> Use drip irrigation and mulching during heat alerts; maintain 3-day water buffer.</li>
+        <li><strong>Data Contribution:</strong> Regular use of the app contributes valuable data for agricultural policy development.</li>
+        <li><strong>Best Practices:</strong> Follow recommended crop schedules and soil management practices for optimal yields.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>AgriSense</h3>
+        <p>Smart Farming for Smarter Policy</p>
+        <p>Transforming agricultural data into actionable policy insights</p>
+      </div>
+      <div class="footer-section">
+        <h4>For Farmers</h4>
+        <ul>
+          <li>Crop Recommendations</li>
+          <li>Weather Forecasts</li>
+          <li>Market Prices</li>
+          <li>Subsidy Information</li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>For Policy Makers</h4>
+        <ul>
+          <li>Real-Time Analytics</li>
+          <li>Regional Productivity Data</li>
+          <li>Farmer Behavior Insights</li>
+          <li>Evidence-Based Governance</li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>Email: info@agrisense.gov</p>
+        <p>Helpline: 1618-00-AGRI</p>
+        <p>SMS: "HELP AG" to 12345</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p id="footerText">AgriSense • Smart Farming for Smarter Policy • Built with ❤️ for farmers and policy makers 🌾</p>
+      <p class="footer-meta">© 2024 AgriSense Platform | Data Privacy Protected | Contributing to Agricultural Excellence</p>
+    </div>
+  </footer>
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-btn active" data-target="top" data-i18n="nav_home">Home</button>
+    <button class="nav-btn" data-target="locationSection" data-i18n="nav_reco">Advice</button>
+    <button class="nav-btn" data-target="weatherSection" data-i18n="nav_weather">Weather</button>
+    <button class="nav-btn" data-target="marketSection" data-i18n="nav_market">Market</button>
+    <button class="nav-btn" data-target="policyImpactSection" data-i18n="nav_policy">Policy</button>
+  </nav>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="locationDialog" class="dialog">
+    <form method="dialog">
+      <h3>Select District</h3>
+      <label for="districtSelect">District:</label>
+      <select id="districtSelect">
+        <option value="Kathmandu">Kathmandu</option>
+        <option value="Kaski">Kaski</option>
+        <option value="Morang">Morang</option>
+        <option value="Banke">Banke</option>
+        <option value="Lalitpur">Lalitpur</option>
+        <option value="Chitwan">Chitwan</option>
+        <option value="Rupandehi">Rupandehi</option>
+      </select>
+      <menu class="dialog-actions">
+        <button id="dialogCancel" class="ghost-btn" value="cancel">Cancel</button>
+        <button id="dialogSet" class="primary-btn" value="default">Set</button>
+      </menu>
+    </form>
+  </dialog>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather (7 Days) - AgriSense Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span>🌾</span> AgriSense Admin</div>
+  </div>
+  <div class="page-wrap">
+    <aside class="sidebar">
+      <div class="brand"><span>🌾</span> AgriSense Admin</div>
+      <nav class="nav">
+        <a href="admin_dashboard.html">🏠 Dashboard</a>
+        <a href="farmers_add.html">👨‍🌾 Add Farmers</a>
+        <a href="policies_post.html">📜 Post New Policy</a>
+        <a href="policies_manage.html">🗂️ Manage Policies</a>
+        <a href="market_vegetables.html">🥕 Market Prices (Vegetables)</a>
+        <a href="market_tools_fertilizers.html">🛠️ Market Prices (Tools & Fertilizers)</a>
+        <a href="weather.html">☀️ Weather (7 Days)</a>
+        <a href="questionnaire.html">❓ Questionnaire</a>
+        <a href="messages.html">✉️ Messages</a>
+        <a href="../Login Code/Gov/admin_login.html">🚪 Log Out</a>
+      </nav>
+    </aside>
+    <main class="content">
+      <div class="container">
+        <div class="header">
+          <h1>Seven-Day Forecast</h1>
+          <a class="btn btn-outline" href="admin_dashboard.html">Back</a>
+        </div>
+        <section class="hero">
+          <form class="form" id="locationForm">
+            <div class="row">
+              <input class="input" id="cityInput" placeholder="Enter city (e.g., Kathmandu)" />
+              <button class="btn" type="submit">Search</button>
+            </div>
+            <div>
+              <button class="btn btn-outline" type="button" id="useGeo">Use My Location</button>
+            </div>
+          </form>
+          <p class="muted" id="locationInfo">Location: not set</p>
+        </section>
+        <section id="forecastGrid" class="grid center">
+          <!-- forecast tiles inserted here -->
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+<script>
+  const forecastGrid = document.getElementById('forecastGrid');
+  const locationInfo = document.getElementById('locationInfo');
+  const cityInput = document.getElementById('cityInput');
+  const form = document.getElementById('locationForm');
+  const useGeoBtn = document.getElementById('useGeo');
+
+  const weatherCodes = {
+    0: 'Clear',
+    1: 'Mainly Clear',
+    2: 'Partly Cloudy',
+    3: 'Overcast',
+    45: 'Fog',
+    48: 'Depositing Rime Fog',
+    51: 'Drizzle: Light',
+    53: 'Drizzle: Moderate',
+    55: 'Drizzle: Dense',
+    61: 'Rain: Slight',
+    63: 'Rain: Moderate',
+    65: 'Rain: Heavy',
+    71: 'Snow: Slight',
+    73: 'Snow: Moderate',
+    75: 'Snow: Heavy',
+    80: 'Rain Showers: Slight',
+    81: 'Rain Showers: Moderate',
+    82: 'Rain Showers: Violent',
+    95: 'Thunderstorm',
+    96: 'Thunderstorm with Hail',
+    99: 'Thunderstorm with Severe Hail'
+  };
+
+  function dayName(dateStr){
+    const d = new Date(dateStr);
+    return d.toLocaleDateString(undefined, { weekday: 'short' });
+  }
+
+  async function searchCity(name){
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data && data.results && data.results.length) {
+      const loc = data.results[0];
+      return { lat: loc.latitude, lon: loc.longitude, label: `${loc.name}, ${loc.country}` };
+    }
+    throw new Error('Location not found');
+  }
+
+  async function fetchForecast(lat, lon){
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.daily;
+  }
+
+  function renderForecast(daily){
+    forecastGrid.innerHTML = '';
+    const { time, temperature_2m_max, temperature_2m_min, weathercode } = daily;
+    time.forEach((t, i) => {
+      const tile = document.createElement('section');
+      tile.className = 'card tile col-3';
+      const desc = weatherCodes[weathercode[i]] || '—';
+      tile.innerHTML = `
+        <strong>${dayName(t)}</strong>
+        <span class="muted">${desc}</span>
+        <span>High ${Math.round(temperature_2m_max[i])}°C / Low ${Math.round(temperature_2m_min[i])}°C</span>
+      `;
+      forecastGrid.appendChild(tile);
+    });
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      const q = cityInput.value.trim() || 'Kathmandu';
+      const { lat, lon, label } = await searchCity(q);
+      locationInfo.textContent = 'Location: ' + label;
+      const daily = await fetchForecast(lat, lon);
+      renderForecast(daily);
+    } catch (err) {
+      locationInfo.textContent = 'Location: not found';
+    }
+  });
+
+  useGeoBtn.addEventListener('click', async () => {
+    if (!navigator.geolocation) {
+      locationInfo.textContent = 'Geolocation not available';
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      locationInfo.textContent = `Location: ${lat.toFixed(3)}, ${lon.toFixed(3)}`;
+      const daily = await fetchForecast(lat, lon);
+      renderForecast(daily);
+    }, () => {
+      locationInfo.textContent = 'Geolocation denied';
+    });
+  });
+
+  // Initial load default
+  (async function init(){
+    try {
+      const { lat, lon, label } = await searchCity('Kathmandu');
+      locationInfo.textContent = 'Location: ' + label;
+      const daily = await fetchForecast(lat, lon);
+      renderForecast(daily);
+    } catch(e) {
+      locationInfo.textContent = 'Location: Kathmandu (fallback)';
+    }
+  })();
+</script>
+</html>

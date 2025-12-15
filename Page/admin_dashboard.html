@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriSense - Admin Dashboard</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span>🌾</span> AgriSense Admin</div>
+  </div>
+  <div class="page-wrap">
+    <aside class="sidebar">
+      <div class="brand"><span>🌾</span> AgriSense Admin</div>
+      <nav class="nav">
+        <a href="farmers_add.html">👨‍🌾 Add Farmers</a>
+        <a href="policies_post.html">📜 Post New Policy</a>
+        <a href="policies_manage.html">🗂️ Manage Policies</a>
+        <a href="market_vegetables.html">🥕 Market Prices (Vegetables)</a>
+        <a href="market_tools_fertilizers.html">🛠️ Market Prices (Tools & Fertilizers)</a>
+        <a href="weather.html">☀️ Weather (7 Days)</a>
+        <a href="questionnaire.html">❓ Questionnaire</a>
+        <a href="messages.html">✉️ Messages</a>
+        <a href="../Login Code/Gov/admin_login.html">🚪 Log Out</a>
+      </nav>
+    </aside>
+    <main class="content">
+      <div class="container">
+        <div class="header">
+          <h1>Admin Dashboard</h1>
+        </div>
+        <section class="hero">
+          <p class="muted">Welcome to AgriSense Admin. Use the tiles below to manage farmers, policies, market data, weather, and engagement.</p>
+        </section>
+        <div class="grid center">
+          <section class="card tile col-6">
+            <h3>Farmers</h3>
+            <p class="muted">Register new farmers and maintain records</p>
+            <div>
+              <a class="btn" href="farmers_add.html">Add Farmers</a>
+            </div>
+          </section>
+          <section class="card tile col-6">
+            <h3>Policies</h3>
+            <p class="muted">Publish new policies and manage existing ones</p>
+            <div>
+              <a class="btn" href="policies_post.html">Post New Policy</a>
+              <a class="btn btn-outline" href="policies_manage.html" style="margin-left:8px;">Manage Policies</a>
+            </div>
+          </section>
+          <section class="card tile col-6">
+            <h3>Market Prices</h3>
+            <p class="muted">View and update market rates</p>
+            <div>
+              <a class="btn" href="market_vegetables.html">Vegetables</a>
+              <a class="btn btn-outline" href="market_tools_fertilizers.html" style="margin-left:8px;">Tools & Fertilizers</a>
+            </div>
+          </section>
+          <section class="card tile col-6">
+            <h3>Weather</h3>
+            <p class="muted">Seven-day forecast to guide farming decisions</p>
+            <div>
+              <a class="btn" href="weather.html">View 7-Day Forecast</a>
+            </div>
+          </section>
+          <section class="card tile col-6">
+            <h3>Engagement</h3>
+            <p class="muted">Collect feedback and manage communications</p>
+            <div>
+              <a class="btn" href="questionnaire.html">Questionnaire</a>
+              <a class="btn btn-outline" href="messages.html" style="margin-left:8px;">Messages</a>
+            </div>
+          </section>
+          <section class="card tile col-6">
+            <h3>Session</h3>
+            <p class="muted">Exit the admin panel securely</p>
+            <div>
+              <a class="btn" href="../Login Code/Gov/admin_login.html">Log Out</a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+<script>
+</script>
+</html>

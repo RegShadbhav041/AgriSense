@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Policies - AgriSense Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span>🌾</span> AgriSense Admin</div>
+  </div>
+  <div class="page-wrap">
+    <aside class="sidebar">
+      <div class="brand"><span>🌾</span> AgriSense Admin</div>
+      <nav class="nav">
+        <a href="admin_dashboard.html">🏠 Dashboard</a>
+        <a href="farmers_add.html">👨‍🌾 Add Farmers</a>
+        <a href="policies_post.html">📜 Post New Policy</a>
+        <a href="policies_manage.html">🗂️ Manage Policies</a>
+        <a href="market_vegetables.html">🥕 Market Prices (Vegetables)</a>
+        <a href="market_tools_fertilizers.html">🛠️ Market Prices (Tools & Fertilizers)</a>
+        <a href="weather.html">☀️ Weather (7 Days)</a>
+        <a href="questionnaire.html">❓ Questionnaire</a>
+        <a href="messages.html">✉️ Messages</a>
+        <a href="../Login Code/Gov/admin_login.html">🚪 Log Out</a>
+      </nav>
+    </aside>
+    <main class="content">
+      <div class="header">
+        <h1>Manage Policies</h1>
+        <a class="btn btn-outline" href="policies_post.html">Post New Policy</a>
+      </div>
+      <section class="card tile">
+        <table class="table" id="policyTable">
+          <thead>
+            <tr><th>Title</th><th>Category</th><th>Effective</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Fertilizer Subsidy 2025</td>
+              <td>Subsidy</td>
+              <td>2025-01-15</td>
+              <td>
+                <button class="btn btn-outline" onclick="editPolicy(this)">Edit</button>
+                <button class="btn" onclick="deletePolicy(this)">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Pesticide Usage Guidelines</td>
+              <td>Regulation</td>
+              <td>2025-02-01</td>
+              <td>
+                <button class="btn btn-outline" onclick="editPolicy(this)">Edit</button>
+                <button class="btn" onclick="deletePolicy(this)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+  <script>
+    function editPolicy(btn){
+      const row = btn.closest('tr');
+      const title = row.children[0].textContent;
+      alert('Edit "'+title+'" (demo). Connect to backend for full CRUD.');
+    }
+    function deletePolicy(btn){
+      const row = btn.closest('tr');
+      if(confirm('Delete policy "'+row.children[0].textContent+'"?')){
+        row.remove();
+      }
+    }
+  </script>
+</body>
+</html>

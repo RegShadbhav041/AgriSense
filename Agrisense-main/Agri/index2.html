@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ne">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>AgriSense – Smart Farming Companion</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles2.css">
+    <meta name="theme-color" content="#1d7a36">
+  </head>
+  <body>
+    <header class="app-header" role="banner">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">🌾</span>
+        <div class="brand-text">
+          <div class="name" data-i18n="app_name">AgriSense</div>
+          <div class="tagline" data-i18n="tagline">सही समय, सही बाली, सही बजार</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="langToggle" class="ghost-btn" aria-label="भाषा परिवर्तन">ने | En</button>
+      </div>
+    </header>
+
+    <main id="main" class="main" role="main">
+      <section id="landing" class="view active" aria-labelledby="landing-title">
+        <h1 id="landing-title" class="visually-hidden">AgriSense Landing</h1>
+        <div class="hero">
+          <h2 class="hero-title" data-i18n="hero_title">Grow the right crop, at the right time, for the right market.</h2>
+          <button id="detectBtn" class="primary-btn" data-i18n="detect_location">मेरो स्थान पहिचान गर्नुहोस्</button>
+        </div>
+        <div class="feature-grid" role="navigation" aria-label="मुख्य सुविधाहरू">
+          <button class="feature-card" data-target="dashboard">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 2l9 4-9 4-9-4 9-4zm-9 7l9 4 9-4v9l-9 4-9-4V9z"/></svg>
+            </div>
+            <div class="feature-title" data-i18n="crop_advice">बाली सल्लाह</div>
+          </button>
+          <button class="feature-card" data-target="weather">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M6 14a6 6 0 1112 0H6zm0 0l-2 4h16l-2-4"/></svg>
+            </div>
+            <div class="feature-title" data-i18n="weather_alerts">मौसम सूचना</div>
+          </button>
+          <button class="feature-card" data-target="market">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3 13h4v8H3v-8zm7-6h4v14h-4V7zm7 3h4v11h-4V10z"/></svg>
+            </div>
+            <div class="feature-title" data-i18n="market_prices">बजार मूल्य</div>
+          </button>
+          <button class="feature-card" data-target="policy">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm0 4h12v2H4v-2zm0 4h16v2H4v-2z"/></svg>
+            </div>
+            <div class="feature-title" data-i18n="gov_support">सरकारी सहयोग</div>
+          </button>
+        </div>
+      </section>
+
+      <section id="dashboard" class="view" aria-labelledby="dash-title">
+        <h2 id="dash-title" data-i18n="dash_title">स्थान-आधारित सल्लाह</h2>
+        <div class="location-summary card">
+          <div class="row">
+            <div class="field">
+              <div class="label" data-i18n="district">जिल्ला</div>
+              <div id="districtText" class="value">—</div>
+            </div>
+            <div class="field">
+              <div class="label" data-i18n="altitude">उचाइ</div>
+              <div id="altitudeText" class="value">—</div>
+            </div>
+            <div class="field">
+              <div class="label" data-i18n="climate_zone">जलवायु क्षेत्र</div>
+              <div id="climateText" class="value">—</div>
+            </div>
+          </div>
+          <div class="actions">
+            <button id="manualLocationBtn" class="ghost-btn" data-i18n="manual_location">म्यानुअल स्थान</button>
+          </div>
+        </div>
+        <div class="reco-grid">
+          <div class="section-title" data-i18n="best_crops">उत्तम बाली</div>
+          <div id="cropCards" class="card-grid"></div>
+          <div class="section-title" data-i18n="med_plants">औषधीय बिरुवा</div>
+          <div id="medCards" class="card-grid"></div>
+          <div class="section-title" data-i18n="other_income">अन्य आम्दानी विकल्प</div>
+          <div id="incomeCards" class="card-grid"></div>
+        </div>
+      </section>
+
+      <section id="weather" class="view" aria-labelledby="weather-title">
+        <h2 id="weather-title" data-i18n="weather_title">जलवायु तथा मौसम बुद्धिमत्ता</h2>
+        <div class="timeline card" id="weatherTimeline" aria-label="७–१० दिनको मौसम"></div>
+        <div class="alerts">
+          <div class="section-title" data-i18n="alerts">चेतावनी</div>
+          <div id="alertList" class="alert-grid"></div>
+        </div>
+      </section>
+
+      <section id="cultivation" class="view" aria-labelledby="cult-title">
+        <h2 id="cult-title" data-i18n="cult_title">खेती मार्गदर्शन</h2>
+        <div class="card">
+          <button id="voiceBtn" class="secondary-btn" data-i18n="voice_guidance">भ्वाइस मार्गदर्शन</button>
+        </div>
+        <div class="accordion" id="cultAccordion">
+          <div class="acc-item">
+            <button class="acc-header" data-i18n="seed_selection">बीउ चयन</button>
+            <div class="acc-panel">
+              <p>स्थान र मौसम अनुसार प्रजाति छनोट गर्नुहोस्। प्रमाणित बीउ प्रयोग गर्नुहोस्।</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-header" data-i18n="fert_irrig">मल र सिंचाइ तालिका</button>
+            <div class="acc-panel">
+              <p>माटो परीक्षण अनुसार मल मात्रा तय गर्नुहोस्। मौसम अनुसार सिंचाइ तालिका पालन गर्नुहोस्।</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-header" data-i18n="pest_disease">कीरा र रोग सचेतना</button>
+            <div class="acc-panel">
+              <p>तापक्रम र आर्द्रता अनुसार सम्भावित जोखिम हेरी जैविक नियन्त्रण प्राथमिकता दिनुहोस्।</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="market" class="view" aria-labelledby="market-title">
+        <h2 id="market-title" data-i18n="market_title">बजार रोडमैप</h2>
+        <div class="card">
+          <canvas id="priceChart" width="600" height="200" aria-label="सरल मूल्य ट्रेन्ड"></canvas>
+        </div>
+        <div class="card">
+          <div class="section-title" data-i18n="market_suggestions">सुझाव</div>
+          <ul id="marketTips" class="tips"></ul>
+        </div>
+        <div class="card">
+          <div class="section-title" data-i18n="nearby_markets">नजिकका बजार/सहकारी</div>
+          <ul id="nearbyMarkets" class="markets"></ul>
+        </div>
+      </section>
+
+      <section id="policy" class="view" aria-labelledby="policy-title">
+        <h2 id="policy-title" data-i18n="policy_title">नीति तथा अनुदान</h2>
+        <div id="policyCards" class="card-grid"></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" role="navigation" aria-label="मुख्य नेभिगेसन">
+      <button class="nav-btn active" data-target="landing" data-i18n="nav_home">गृह</button>
+      <button class="nav-btn" data-target="dashboard" data-i18n="nav_reco">सल्लाह</button>
+      <button class="nav-btn" data-target="weather" data-i18n="nav_weather">मौसम</button>
+      <button class="nav-btn" data-target="market" data-i18n="nav_market">बजार</button>
+      <button class="nav-btn" data-target="policy" data-i18n="nav_policy">अनुदान</button>
+    </nav>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <dialog id="locationDialog" class="dialog">
+      <form method="dialog">
+        <h3 data-i18n="set_location">स्थान चयन</h3>
+        <label for="districtSelect" data-i18n="select_district">जिल्ला चयन:</label>
+        <select id="districtSelect">
+          <option value="Kathmandu">काठमाडौं</option>
+          <option value="Kaski">कास्की</option>
+          <option value="Morang">मोरंग</option>
+          <option value="Banke">बाँके</option>
+          <option value="Lalitpur">ललितपुर</option>
+          <option value="Chitwan">चितवन</option>
+          <option value="Rupandehi">रुपन्देही</option>
+        </select>
+        <menu class="dialog-actions">
+          <button id="dialogCancel" class="ghost-btn" value="cancel" data-i18n="cancel">रद्द</button>
+          <button id="dialogSet" class="primary-btn" value="default" data-i18n="set">सेट</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <script src="script2.js" defer></script>
+  </body>
+</html>

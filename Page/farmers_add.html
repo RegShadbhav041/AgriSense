@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Farmers - AgriSense Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span>🌾</span> AgriSense Admin</div>
+  </div>
+  <div class="page-wrap">
+    <aside class="sidebar">
+      <div class="brand"><span>🌾</span> AgriSense Admin</div>
+      <nav class="nav">
+        <a href="admin_dashboard.html">🏠 Dashboard</a>
+        <a href="farmers_add.html">👨‍🌾 Add Farmers</a>
+        <a href="policies_post.html">📜 Post New Policy</a>
+        <a href="policies_manage.html">🗂️ Manage Policies</a>
+        <a href="market_vegetables.html">🥕 Market Prices (Vegetables)</a>
+        <a href="market_tools_fertilizers.html">🛠️ Market Prices (Tools & Fertilizers)</a>
+        <a href="weather.html">☀️ Weather (7 Days)</a>
+        <a href="questionnaire.html">❓ Questionnaire</a>
+        <a href="messages.html">✉️ Messages</a>
+        <a href="../Login Code/Gov/admin_login.html">🚪 Log Out</a>
+      </nav>
+    </aside>
+    <main class="content">
+      <div class="header">
+        <h1>Add Farmers</h1>
+        <a class="btn btn-outline" href="admin_dashboard.html">Back to Dashboard</a>
+      </div>
+      <section class="card tile">
+        <form class="form" id="farmerForm">
+          <div class="row">
+            <input class="input" name="name" placeholder="Full Name" required>
+            <input class="input" name="phone" placeholder="Phone (10 digits)" pattern="[0-9]{10}" maxlength="10" required>
+          </div>
+          <div class="row">
+            <input class="input" name="email" type="email" placeholder="Email Address" required>
+            <input class="input" name="location" placeholder="Location (District/City)" required>
+          </div>
+          <div class="row">
+            <input class="input" name="farmSize" type="number" min="0" step="0.1" placeholder="Farm Size (hectares)" required>
+            <select class="select" name="primaryCrop" required>
+              <option value="">Primary Crop</option>
+              <option>Rice</option>
+              <option>Wheat</option>
+              <option>Maize</option>
+              <option>Vegetables</option>
+              <option>Fruits</option>
+            </select>
+          </div>
+          <textarea class="textarea" name="notes" placeholder="Notes (optional)"></textarea>
+          <div>
+            <button class="btn" type="submit">Add Farmer</button>
+          </div>
+        </form>
+      </section>
+      <section class="card tile" style="margin-top:16px;">
+        <h3>Recent Registrations</h3>
+        <p class="muted">This is a placeholder list. Connect to your backend to persist.</p>
+        <table class="table">
+          <thead><tr><th>Name</th><th>Phone</th><th>Location</th><th>Primary Crop</th></tr></thead>
+          <tbody id="farmerList">
+            <tr><td>Ram Shrestha</td><td>9812345678</td><td>Lalitpur</td><td>Vegetables</td></tr>
+            <tr><td>Sita Rai</td><td>9801122334</td><td>Chitwan</td><td>Rice</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+  <script>
+    document.getElementById('farmerForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const form = new FormData(this);
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${form.get('name')}</td>
+        <td>${form.get('phone')}</td>
+        <td>${form.get('location')}</td>
+        <td>${form.get('primaryCrop')}</td>
+      `;
+      document.getElementById('farmerList').prepend(row);
+      this.reset();
+    });
+  </script>
+</body>
+</html>

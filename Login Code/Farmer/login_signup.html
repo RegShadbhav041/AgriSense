@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSense - Farmer Login</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1d7a36 0%, #279a44 50%, #41b66a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 520px;
+            position: relative;
+        }
+
+        .form-container {
+            position: relative;
+            width: 100%;
+            z-index: 2;
+        }
+
+        .sign-in-container {
+            left: 0;
+            z-index: 2;
+        }
+
+        .sign-up-container {
+            left: 0;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        
+
+        .form-content {
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 40px 50px;
+            height: 100%;
+            text-align: center;
+        }
+
+        .form-content h1 {
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #1d7a36 0%, #41b66a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-content span {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-field {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1d7a36 0%, #41b66a 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 15px 40px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            min-height: 50px;
+            box-sizing: border-box;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(29, 122, 54, 0.4);
+        }
+
+        .overlay-container { display: none !important; }
+        .sign-up-container { display: none !important; }
+        .mobile-toggle { display: none !important; }
+
+        .auth-container.right-panel-active .overlay-container {
+            transform: translateX(-100%);
+        }
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        /* Toast Notification Styles */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 350px;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            border-left: 4px solid;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left-color: #10b981;
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+            color: #065f46;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+            background: linear-gradient(135deg, #fef2f2 0%, #fef7f7 100%);
+            color: #991b1b;
+        }
+
+        .toast-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .toast-message {
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        /* Loading States */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .auth-container {
+                width: 100%;
+                border-radius: 0;
+                max-width: none;
+            }
+
+            .form-container {
+                width: 100%;
+                position: relative;
+            }
+
+            .overlay-container {
+                display: none;
+            }
+
+            .sign-up-container {
+                display: none;
+            }
+
+            .form-content {
+                padding: 40px 30px;
+                justify-content: flex-start;
+                padding-top: 80px;
+            }
+
+            .form-content h1 {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+
+            .mobile-toggle {
+                display: none;
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: white;
+                border-radius: 25px;
+                padding: 5px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+            }
+
+            .mobile-toggle button {
+                background: transparent;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                color: #666;
+                font-size: 0.9rem;
+                min-width: 80px;
+            }
+
+            .mobile-toggle button.active {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container" id="container">
+        
+        <!-- Sign In Form -->
+        <div class="form-container sign-in-container">
+            <div class="form-content">
+                <h1>AgriSense Farmer Login</h1>
+                <span>Sign in to your AgriSense account</span>
+                <form id="signInForm">
+                    <div class="form-group">
+                        <input type="email" class="form-control" placeholder="Email Address" name="email" required>
+                    </div>
+                    <div class="form-group password-field">
+                        <input type="password" class="form-control" placeholder="Password" name="password" required>
+                        <button type="button" class="password-toggle">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </div>
+                    <button class="btn-primary" type="submit">Sign In</button>
+                </form>
+            </div>
+        </div>
+
+        
+    </div>
+
+    
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        const container = document.getElementById('container');
+
+        // Password toggle functionality
+        document.querySelectorAll('.password-toggle').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('input');
+                const icon = this.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+
+        // Toast notification system
+        function showToast(type, title, message) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+
+            const iconMap = {
+                success: '✅',
+                error: '❌'
+            };
+
+            toast.innerHTML = `
+                <div class="toast-icon">${iconMap[type]}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 100);
+
+            // Auto remove
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Form validation and submission
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 6;
+        }
+
+        
+
+        // Set button loading state
+        function setButtonLoading(button, loading) {
+            if (loading) {
+                button.classList.add('btn-loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('btn-loading');
+                button.disabled = false;
+            }
+        }
+
+        
+
+        // Sign In Form Handler
+        document.getElementById('signInForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const email = formData.get('email').trim();
+            const password = formData.get('password');
+
+            // Validation
+            if (!validateEmail(email)) {
+                showToast('error', 'Validation Error', 'Please enter a valid email address');
+                return;
+            }
+
+            if (!password) {
+                showToast('error', 'Validation Error', 'Please enter your password');
+                return;
+            }
+
+            // Show loading state
+            const submitBtn = this.querySelector('.btn-primary');
+            setButtonLoading(submitBtn, true);
+
+            // Prepare data for submission
+            const params = new URLSearchParams();
+            params.append('action', 'signin');
+            params.append('email', email);
+            params.append('password', password);
+
+            // Submit to server
+            fetch('process_form.php?' + params.toString(), {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+                setButtonLoading(submitBtn, false);
+
+                if (data.success) {
+                    showToast('success', 'Welcome Back!', data.message);
+
+                    // Redirect to main page after successful login
+                    setTimeout(() => {
+                        window.location.href = data.redirect || '../../index.html';
+                    }, 1500);
+                } else {
+                    showToast('error', 'Login Failed', data.message);
+                }
+            })
+            .catch(error => {
+                setButtonLoading(submitBtn, false);
+                console.error('Error:', error);
+                showToast('error', 'Connection Error', 'Failed to connect to server. Please check your connection.');
+            });
+        });
+
+        
+    </script>
+</body>
+</html>

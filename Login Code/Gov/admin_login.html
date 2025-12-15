@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSense - Admin Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-bg {
+            background: linear-gradient(135deg, #1d7a36 0%, #279a44 50%, #41b66a 100%);
+            min-height: 100vh;
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .form-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #22c55e;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.3s ease;
+        }
+        
+        .password-toggle:hover {
+            color: #22c55e;
+        }
+        
+        .admin-btn {
+            background: linear-gradient(135deg, #1d7a36 0%, #41b66a 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 28px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(29, 122, 54, 0.3);
+        }
+        
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(29, 122, 54, 0.45);
+        }
+        
+        .admin-btn:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #16a34a;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+    </style>
+</head>
+<body class="admin-bg">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="login-card rounded-2xl shadow-2xl p-8 w-full max-w-md">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-full mb-4">
+                    <i class="fas fa-shield-alt text-white text-2xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Admin Portal</h1>
+                <p class="text-gray-600">AgriSense Administration</p>
+            </div>
+
+            <!-- Messages -->
+            <div id="error-message" class="error-message">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span id="error-text"></span>
+            </div>
+            
+            <div id="success-message" class="success-message">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span id="success-text"></span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="admin-login-form">
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        <i class="fas fa-envelope mr-2 text-green-600"></i>Admin Email
+                    </label>
+                    <input type="email" id="admin-email" class="form-input w-full" 
+                           placeholder="Enter admin email address" required>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        <i class="fas fa-lock mr-2 text-green-600"></i>Password
+                    </label>
+                    <div class="password-container">
+                        <input type="password" id="admin-password" class="form-input w-full pr-12" 
+                               placeholder="Enter admin password" required>
+                        <i class="fas fa-eye password-toggle" id="password-toggle" onclick="togglePassword()"></i>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="remember-me" class="mr-2 text-green-600">
+                        <span class="text-gray-700">Remember me for 24 hours</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="admin-btn w-full">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Access Admin Panel
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="text-center mt-8 pt-6 border-t border-gray-200">
+                <p class="text-sm text-gray-500">
+                    <i class="fas fa-shield-alt mr-1"></i>
+                    Secure Admin Access Only
+                </p>
+                <p class="text-xs text-gray-400 mt-2">
+                    © 2024 AgriSense. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin credentials
+        const ADMIN_CREDENTIALS = {
+            email: 'admindon@gmail.com',
+            password: 'Kherekomula'
+        };
+
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('admin-password');
+            const toggleIcon = document.getElementById('password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Show message functions
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const successDiv = document.getElementById('success-message');
+            
+            successDiv.style.display = 'none';
+            errorText.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            const successText = document.getElementById('success-text');
+            const errorDiv = document.getElementById('error-message');
+            
+            errorDiv.style.display = 'none';
+            successText.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        // Handle form submission
+        document.getElementById('admin-login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('admin-email').value.trim();
+            const password = document.getElementById('admin-password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+            
+            // Validate credentials
+            if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+                showSuccess('Login successful! Redirecting to admin dashboard...');
+                
+                // Store admin session
+                const sessionData = {
+                    isAdmin: true,
+                    email: email,
+                    loginTime: Date.now(),
+                    rememberMe: rememberMe
+                };
+                
+                if (rememberMe) {
+                    localStorage.setItem('agrisense_admin_session', JSON.stringify(sessionData));
+                } else {
+                    sessionStorage.setItem('agrisense_admin_session', JSON.stringify(sessionData));
+                }
+                
+                // Redirect to admin dashboard
+                setTimeout(() => {
+                    window.location.href = 'admin_dashboard.html';
+                }, 1500);
+                
+            } else {
+                showError('Invalid email or password. Please try again.');
+            }
+        });
+
+        // Check if already logged in
+        function checkExistingSession() {
+            const sessionData = localStorage.getItem('agrisense_admin_session') || 
+                               sessionStorage.getItem('agrisense_admin_session');
+            
+            if (sessionData) {
+                try {
+                    const session = JSON.parse(sessionData);
+                    const now = Date.now();
+                    const sessionAge = now - session.loginTime;
+                    const maxAge = session.rememberMe ? 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000; // 24h or 8h
+                    
+                    if (session.isAdmin && sessionAge < maxAge) {
+                        showSuccess('Existing session found. Redirecting...');
+                        setTimeout(() => {
+                            window.location.href = 'admin_dashboard.html';
+                        }, 1000);
+                        return true;
+                    } else {
+                        // Clear expired session
+                        localStorage.removeItem('agrisense_admin_session');
+                        sessionStorage.removeItem('agrisense_admin_session');
+                    }
+                } catch (e) {
+                    console.error('Invalid session data');
+                }
+            }
+            return false;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkExistingSession();
+        });
+    </script>
+</body>
+</html>
