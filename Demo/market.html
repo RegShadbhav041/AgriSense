@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Prices - AgriSense</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Dark Theme */
+        body.dark-theme {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme nav {
+            background: linear-gradient(135deg, #1a2e10 0%, #2d4a1f 100%);
+        }
+
+        body.dark-theme .market-header {
+            background: linear-gradient(135deg, #2d4a1f 0%, #3d5f2a 100%);
+        }
+
+        body.dark-theme .market-section {
+            background: #242424;
+        }
+
+        body.dark-theme .price-card {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .trending-section {
+            background: #1a1a1a;
+        }
+
+        body.dark-theme .trending-card {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .commodities-section {
+            background: #242424;
+        }
+
+        body.dark-theme .commodity-table {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .commodity-table th {
+            background: #1a1a1a;
+        }
+
+        body.dark-theme footer {
+            background: #1a2e10;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle, .lang-toggle {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle:hover, .lang-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #a8d08d;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Market Header */
+        .market-header {
+            background: linear-gradient(135deg, #4a7c2c 0%, #6b9d47 100%);
+            color: #fff;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .market-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .market-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Price Cards */
+        .market-section {
+            padding: 3rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #2d5016;
+            margin-bottom: 2rem;
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .price-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .price-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .price-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .crop-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d5016;
+        }
+
+        .price-change {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .price-up {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .price-down {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .price-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4a7c2c;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-unit {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .price-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .price-detail {
+            text-align: center;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #2d5016;
+        }
+
+        /* Trending Section */
+        .trending-section {
+            padding: 3rem 2rem;
+            background: #fff;
+        }
+
+        .trending-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .trending-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #4a7c2c;
+        }
+
+        .trending-card h3 {
+            color: #2d5016;
+            margin-bottom: 1rem;
+        }
+
+        .trend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .trend-item:last-child {
+            border-bottom: none;
+        }
+
+        .trend-name {
+            font-weight: 500;
+        }
+
+        .trend-price {
+            font-weight: 600;
+            color: #4a7c2c;
+        }
+
+        /* Commodities Table */
+        .commodities-section {
+            padding: 3rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .commodity-table {
+            width: 100%;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .commodity-table th {
+            background: #4a7c2c;
+            color: #fff;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .commodity-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .commodity-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .commodity-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .market-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-open {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-closed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Footer */
+        footer {
+            background: #2d5016;
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: #2d5016;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                padding: 2rem 0;
+                gap: 1rem;
+            }
+
+            body.dark-theme .nav-menu {
+                background: #1a2e10;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .market-title {
+                font-size: 2rem;
+            }
+
+            .commodity-table {
+                font-size: 0.9rem;
+            }
+
+            .commodity-table th,
+            .commodity-table td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">🌾 <span id="logoText">AgriSense</span></a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="weather.html" data-en="Weather" data-ne="मौसम">Weather</a></li>
+                <li><a href="market.html" class="active" data-en="Market" data-ne="बजार">Market</a></li>
+                <li><a href="analytics.html" data-en="Analytics" data-ne="विश्लेषण">Analytics</a></li>
+                <li><a href="index.html#policies" data-en="Policies" data-ne="नीतिहरू">Policies</a></li>
+                <li><a href="login.html" class="login-btn" data-en="Login" data-ne="लगइन">Login</a></li>
+            </ul>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙 Dark</button>
+                <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">🇳🇵 नेपाली</button>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Market Header -->
+    <section class="market-header">
+        <h1 class="market-title" id="marketTitle">Agricultural Market Prices</h1>
+        <p class="market-subtitle" id="marketDesc">Real-time market prices and trends from Kalimati Fruits & Vegetable Market</p>
+    </section>
+
+    <!-- Top Commodities -->
+    <section class="market-section">
+        <div class="container">
+            <h2 class="section-title" id="topTitle">Top Commodities Today</h2>
+            <div class="price-grid">
+                <div class="price-card">
+                    <div class="price-header">
+                        <span class="crop-name" id="crop1">Rice (Basmati)</span>
+                        <span class="price-change price-up">+5.2%</span>
+                    </div>
+                    <div class="price-value">रू 125</div>
+                    <div class="price-unit">per kg</div>
+                    <div class="price-details">
+                        <div class="price-detail">
+                            <div class="detail-label" id="minLabel">Min</div>
+                            <div class="detail-value">रू 120</div>
+                        </div>
+                        <div class="price-detail">
+                            <div class="detail-label" id="maxLabel">Max</div>
+                            <div class="detail-value">रू 130</div>
+                        </div>
+                        <div class="price-detail">
+                            <div class="detail-label" id="avgLabel">Avg</div>
+                            <div class="detail-value">रू 125</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="price-card">
+                    <div class="price-header">
+                        <span class="crop-name" id="crop2">Potato</span>
+                        <span class="price-change price-down">-2.1%</span>
+                    </div>
+                    <div class="price-value">रू 45</div>
+                    <div class="price-unit">per kg</div>
+                    <div class="price-details">
+                        <div class="price-detail">
+                            <div class="detail-label" id="minLabel2">Min</div>
+                            <div class="detail-value">रू 42</div>
+                        </div>
+                        <div class="price-detail">
+                            <div class="detail-label" id="maxLabel2">Max</div>
+                            <div class="detail-value">रू 48</div>
+                        </div>
+                        <div class="price-detail">
+                            <div class="detail-label" id="avgLabel2">Avg</div>
+                            <div class="detail-value">रू 45</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="price-card">
+                    <div class="price-header">
+                        <span class="crop-name" id="crop3">Tomato</span>
+                        <span class="price-change price-up">+8.7%</span>
+                    </div>
+                    <div class="price-value">रू 80</div>
+                    <div class="price-unit">per kg</div>
+                    <div class="price-details">
+                        <div class="price-detail">
+                            <div class="detail-label" id="minLabel3">Min</div>
+                            <div class="detail-value">रू 75</div>
+                        </div>
+                        <div class="price-detail">
+                            <div class="detail-label" id="maxLabel3">Max</div>
+                            <div class="detail-value">रू 85</div>
+                        </div>
+                        <div class="price-detail">
+                            <div class="detail-label" id="avgLabel3">Avg</div>
+                            <div class="detail-value">रू 80</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="price-card">
+                    <div class="price-header">
+                        <span class="crop-name" id="crop4">Onion</span>
+                        <span class="price-change price-up">+3.4%</span>
+                    </div>
+                    <div class="price-value">रू 65</div>
+                    <div class="price-unit">per kg</div>
+                    <div class="price-details">
+                        <div class="price-detail">
+                            <div class="detail-label" id="minLabel4">Min</div>
+                            <div class="detail-value">रू 60</div>
+                        </div>
+                        <div class="price-detail">
+                            <div class="detail-label" id="maxLabel4">Max</div>
+                            <div class="detail-value">रू 70</div>
+                        </div>
+                        <div class="price-detail">
+                            <div class="detail-label" id="avgLabel4">Avg</div>
+                            <div class="detail-value">रू 65</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Markets -->
+    <section class="trending-section">
+        <div class="container">
+            <h2 class="section-title" id="trendingTitle">Prices in Major Markets</h2>
+            <div class="trending-grid">
+                <div class="trending-card">
+                    <h3 id="market1">Kalimati Market</h3>
+                    <div class="trend-item">
+                        <span class="trend-name">Cauliflower</span>
+                        <span class="trend-price">रू 60/kg</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-name">Cabbage</span>
+                        <span class="trend-price">रू 40/kg</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-name">Carrot</span>
+                        <span class="trend-price">रू 70/kg</span>
+                    </div>
+                </div>
+
+                <div class="trending-card">
+                    <h3 id="market2">Bhatbhateni Market</h3>
+                    <div class="trend-item">
+                        <span class="trend-name">Cauliflower</span>
+                        <span class="trend-price">रू 65/kg</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-name">Cabbage</span>
+                        <span class="trend-price">रू 45/kg</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-name">Carrot</span>
+                        <span class="trend-price">रू 75/kg</span>
+                    </div>
+                </div>
+
+                <div class="trending-card">
+                    <h3 id="market3">Patan Market</h3>
+                    <div class="trend-item">
+                        <span class="trend-name">Cauliflower</span>
+                        <span class="trend-price">रू 55/kg</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-name">Cabbage</span>
+                        <span class="trend-price">रू 35/kg</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-name">Carrot</span>
+                        <span class="trend-price">रू 65/kg</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commodities Table -->
+    <section class="commodities-section">
+        <div class="container">
+            <h2 class="section-title" id="tableTitle">Complete Market Overview</h2>
+            <table class="commodity-table">
+                <thead>
+                    <tr>
+                        <th id="thCommodity">Commodity</th>
+                        <th id="thMarket">Market</th>
+                        <th id="thPrice">Price (रू/kg)</th>
+                        <th id="thChange">Change</th>
+                        <th id="thStatus">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="commodity1">Rice (Basmati)</td>
+                        <td id="marketName1">Kalimati</td>
+                        <td>125</td>
+                        <td class="price-up">+5.2%</td>
+                        <td><span class="market-status status-open" id="statusOpen">Open</span></td>
+                    </tr>
+                    <tr>
+                        <td id="commodity2">Potato</td>
+                        <td id="marketName2">Bhatbhateni</td>
+                        <td>45</td>
+                        <td class="price-down">-2.1%</td>
+                        <td><span class="market-status status-open" id="statusOpen2">Open</span></td>
+                    </tr>
+                    <tr>
+                        <td id="commodity3">Tomato</td>
+                        <td id="marketName3">Patan</td>
+                        <td>80</td>
+                        <td class="price-up">+8.7%</td>
+                        <td><span class="market-status status-closed" id="statusClosed">Closed</span></td>
+                    </tr>
+                    <tr>
+                        <td id="commodity4">Onion</td>
+                        <td id="marketName4">New Road</td>
+                        <td>65</td>
+                        <td class="price-up">+3.4%</td>
+                        <td><span class="market-status status-open" id="statusOpen3">Open</span></td>
+                    </tr>
+                    <tr>
+                        <td id="commodity5">Ginger</td>
+                        <td id="marketName5">Balkhu</td>
+                        <td>250</td>
+                        <td class="price-up">+12.3%</td>
+                        <td><span class="market-status status-open" id="statusOpen4">Open</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 AgriSense. All rights reserved. Empowering Nepali farmers with technology.</p>
+    </footer>
+
+    <script>
+        // Language translations
+        const translations = {
+            en: {
+                logoText: 'AgriSense',
+                marketTitle: 'Agricultural Market Prices',
+                marketDesc: 'Real-time market prices and trends from Kalimati Fruits & Vegetable Market',
+                topTitle: 'Top Commodities Today',
+                trendingTitle: 'Prices in Major Markets',
+                tableTitle: 'Complete Market Overview',
+                crop1: 'Rice (Basmati)',
+                crop2: 'Potato',
+                crop3: 'Tomato',
+                crop4: 'Onion',
+                minLabel: 'Min',
+                maxLabel: 'Max',
+                avgLabel: 'Avg',
+                market1: 'Kalimati Market',
+                market2: 'Bhatbhateni Market',
+                market3: 'Patan Market',
+                thCommodity: 'Commodity',
+                thMarket: 'Market',
+                thPrice: 'Price (रू/kg)',
+                thChange: 'Change',
+                thStatus: 'Status',
+                commodity1: 'Rice (Basmati)',
+                commodity2: 'Potato',
+                commodity3: 'Tomato',
+                commodity4: 'Onion',
+                commodity5: 'Ginger',
+                marketName1: 'Kalimati',
+                marketName2: 'Bhatbhateni',
+                marketName3: 'Patan',
+                marketName4: 'New Road',
+                marketName5: 'Balkhu',
+                statusOpen: 'Open',
+                statusClosed: 'Closed',
+                themeLight: '☀️ Light',
+                themeDark: '🌙 Dark',
+                langBtn: '🇳🇵 नेपाली'
+            },
+            ne: {
+                logoText: 'एग्रीसेन्स',
+                marketTitle: 'कृषि बजार मूल्य',
+                marketDesc: 'कालिमती फलफूल तथा तरकारी बजारबाट वास्तविक समय बजार मूल्य र प्रवृत्ति',
+                topTitle: 'आजका शीर्ष वस्तुहरू',
+                trendingTitle: 'प्रमुख बजारहरूमा मूल्य',
+                tableTitle: 'पूर्ण बजार अवलोकन',
+                crop1: 'चामल (बासमती)',
+                crop2: 'आलु',
+                crop3: 'टमाटर',
+                crop4: 'प्याज',
+                minLabel: 'न्यूनतम',
+                maxLabel: 'अधिकतम',
+                avgLabel: 'औसत',
+                market1: 'कालिमती बजार',
+                market2: 'भटभटेनी बजार',
+                market3: 'पाटन बजार',
+                thCommodity: 'वस्तु',
+                thMarket: 'बजार',
+                thPrice: 'मूल्य (रू/केजी)',
+                thChange: 'परिवर्तन',
+                thStatus: 'स्थिति',
+                commodity1: 'चामल (बासमती)',
+                commodity2: 'आलु',
+                commodity3: 'टमाटर',
+                commodity4: 'प्याज',
+                commodity5: 'अदुवा',
+                marketName1: 'कालिमती',
+                marketName2: 'भटभटेनी',
+                marketName3: 'पाटन',
+                marketName4: 'न्यूरोड',
+                marketName5: 'बल्खु',
+                statusOpen: 'खुला',
+                statusClosed: 'बन्द',
+                themeLight: '☀️ उज्यालो',
+                themeDark: '🌙 अँध्यारो',
+                langBtn: '🇬🇧 English'
+            }
+        };
+
+        let currentLang = 'en';
+        let isDarkTheme = false;
+
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Theme toggle function
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme');
+            
+            const themeBtn = document.getElementById('themeToggle');
+            if (isDarkTheme) {
+                themeBtn.textContent = translations[currentLang].themeLight;
+            } else {
+                themeBtn.textContent = translations[currentLang].themeDark;
+            }
+            
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        }
+
+        // Language toggle function
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ne' : 'en';
+            updateLanguage();
+            localStorage.setItem('language', currentLang);
+        }
+
+        function updateLanguage() {
+            const trans = translations[currentLang];
+            
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                const text = currentLang === 'en' ? link.getAttribute('data-en') : link.getAttribute('data-ne');
+                if (text) link.textContent = text;
+            });
+            
+            document.getElementById('logoText').textContent = trans.logoText;
+            document.getElementById('marketTitle').textContent = trans.marketTitle;
+            document.getElementById('marketDesc').textContent = trans.marketDesc;
+            document.getElementById('topTitle').textContent = trans.topTitle;
+            document.getElementById('trendingTitle').textContent = trans.trendingTitle;
+            document.getElementById('tableTitle').textContent = trans.tableTitle;
+            document.getElementById('crop1').textContent = trans.crop1;
+            document.getElementById('crop2').textContent = trans.crop2;
+            document.getElementById('crop3').textContent = trans.crop3;
+            document.getElementById('crop4').textContent = trans.crop4;
+            document.getElementById('minLabel').textContent = trans.minLabel;
+            document.getElementById('maxLabel').textContent = trans.maxLabel;
+            document.getElementById('avgLabel').textContent = trans.avgLabel;
+            document.getElementById('market1').textContent = trans.market1;
+            document.getElementById('market2').textContent = trans.market2;
+            document.getElementById('market3').textContent = trans.market3;
+            document.getElementById('thCommodity').textContent = trans.thCommodity;
+            document.getElementById('thMarket').textContent = trans.thMarket;
+            document.getElementById('thPrice').textContent = trans.thPrice;
+            document.getElementById('thChange').textContent = trans.thChange;
+            document.getElementById('thStatus').textContent = trans.thStatus;
+            document.getElementById('commodity1').textContent = trans.commodity1;
+            document.getElementById('commodity2').textContent = trans.commodity2;
+            document.getElementById('commodity3').textContent = trans.commodity3;
+            document.getElementById('commodity4').textContent = trans.commodity4;
+            document.getElementById('commodity5').textContent = trans.commodity5;
+            document.getElementById('marketName1').textContent = trans.marketName1;
+            document.getElementById('marketName2').textContent = trans.marketName2;
+            document.getElementById('marketName3').textContent = trans.marketName3;
+            document.getElementById('marketName4').textContent = trans.marketName4;
+            document.getElementById('marketName5').textContent = trans.marketName5;
+            document.getElementById('statusOpen').textContent = trans.statusOpen;
+            document.getElementById('statusOpen2').textContent = trans.statusOpen;
+            document.getElementById('statusOpen3').textContent = trans.statusOpen;
+            document.getElementById('statusOpen4').textContent = trans.statusOpen;
+            document.getElementById('statusClosed').textContent = trans.statusClosed;
+            
+            document.getElementById('langToggle').textContent = trans.langBtn;
+            document.getElementById('themeToggle').textContent = isDarkTheme ? trans.themeLight : trans.themeDark;
+        }
+
+        // Load saved preferences
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const savedLang = localStorage.getItem('language');
+            
+            if (savedTheme === 'dark') {
+                toggleTheme();
+            }
+            
+            if (savedLang === 'ne') {
+                toggleLanguage();
+            }
+        });
+    </script>
+</body>
+</html>

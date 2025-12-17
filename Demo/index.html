@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriSense - Smart Agriculture Solutions</title>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+line-height: 1.6;
+color: #333;
+transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark Theme */
+body.dark-theme {
+background-color: #1a1a1a;
+color: #e0e0e0;
+}
+
+body.dark-theme nav {
+background: linear-gradient(135deg, #1a2e10 0%, #2d4a1f 100%);
+}
+
+body.dark-theme .hero {
+background: linear-gradient(135deg, #2d4a1f 0%, #3d5f2a 100%);
+}
+
+body.dark-theme .features {
+background: #242424;
+}
+
+body.dark-theme .feature-card {
+background: #2d2d2d;
+color: #e0e0e0;
+}
+
+body.dark-theme .policies {
+background: #1a1a1a;
+}
+
+body.dark-theme .policy-content {
+background: #242424;
+}
+
+body.dark-theme .policy-item {
+background: #2d2d2d;
+color: #e0e0e0;
+}
+
+body.dark-theme .contact {
+background: linear-gradient(135deg, #242424 0%, #2d2d2d 100%);
+}
+
+body.dark-theme .contact-form {
+background: #2d2d2d;
+}
+
+body.dark-theme .form-group input,
+body.dark-theme .form-group textarea {
+background: #1a1a1a;
+color: #e0e0e0;
+border-color: #444;
+}
+
+body.dark-theme .tab-btn {
+background: #2d2d2d;
+color: #e0e0e0;
+}
+
+body.dark-theme footer {
+background: #1a2e10;
+}
+
+/* Navigation */
+nav {
+background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+padding: 1rem 2rem;
+position: sticky;
+top: 0;
+z-index: 1000;
+box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-container {
+display: flex;
+justify-content: space-between;
+align-items: center;
+max-width: 1200px;
+margin: 0 auto;
+}
+
+.logo {
+font-size: 1.8rem;
+font-weight: bold;
+color: #fff;
+text-decoration: none;
+}
+
+.nav-controls {
+display: flex;
+align-items: center;
+gap: 1rem;
+}
+
+.theme-toggle, .lang-toggle {
+background: rgba(255,255,255,0.2);
+border: 2px solid rgba(255,255,255,0.3);
+color: #fff;
+padding: 0.5rem 1rem;
+border-radius: 20px;
+cursor: pointer;
+font-weight: 600;
+transition: all 0.3s;
+font-size: 0.9rem;
+}
+
+.theme-toggle:hover, .lang-toggle:hover {
+background: rgba(255,255,255,0.3);
+transform: translateY(-2px);
+}
+
+.nav-menu {
+display: flex;
+list-style: none;
+gap: 2rem;
+}
+
+.nav-menu a {
+color: #fff;
+text-decoration: none;
+transition: color 0.3s;
+font-weight: 500;
+}
+
+.nav-menu a:hover {
+color: #a8d08d;
+}
+
+/* Marquee */
+.marquee-container {
+background: linear-gradient(90deg, #3d5f2a 0%, #4a7c2c 50%, #3d5f2a 100%);
+color: #fff;
+padding: 0.8rem 0;
+overflow: hidden;
+position: sticky;
+top: 70px;
+z-index: 999;
+box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .marquee-container {
+background: linear-gradient(90deg, #1a2e10 0%, #2d4a1f 50%, #1a2e10 100%);
+}
+
+.marquee {
+display: flex;
+animation: scroll 25s linear infinite;
+white-space: nowrap;
+}
+
+.marquee-text {
+padding: 0 3rem;
+font-weight: 600;
+font-size: 1.1rem;
+}
+
+@keyframes scroll {
+0% {
+transform: translateX(0);
+}
+100% {
+transform: translateX(-50%);
+}
+}
+
+.hamburger {
+display: none;
+flex-direction: column;
+cursor: pointer;
+}
+
+.hamburger span {
+width: 25px;
+height: 3px;
+background: #fff;
+margin: 3px 0;
+transition: 0.3s;
+}
+
+/* Hero Section */
+.hero {
+background: linear-gradient(135deg, #4a7c2c 0%, #6b9d47 100%);
+color: #fff;
+padding: 4rem 2rem;
+text-align: center;
+}
+
+.hero-content {
+max-width: 800px;
+margin: 0 auto;
+}
+
+.hero h1 {
+font-size: 2.5rem;
+margin-bottom: 1rem;
+}
+
+.hero p {
+font-size: 1.2rem;
+margin-bottom: 2rem;
+opacity: 0.95;
+}
+
+.cta-button {
+background: #fff;
+color: #2d5016;
+padding: 1rem 2rem;
+border: none;
+border-radius: 30px;
+font-size: 1rem;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s;
+}
+
+.cta-button:hover {
+transform: translateY(-3px);
+box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Features Section */
+.features {
+padding: 4rem 2rem;
+background: #f8f9fa;
+}
+
+.container {
+max-width: 1200px;
+margin: 0 auto;
+}
+
+.section-title {
+text-align: center;
+font-size: 2rem;
+color: #2d5016;
+margin-bottom: 3rem;
+}
+
+.feature-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 2rem;
+}
+
+.feature-card {
+background: #fff;
+padding: 2rem;
+border-radius: 10px;
+text-align: center;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+transition: transform 0.3s;
+}
+
+.feature-card:hover {
+transform: translateY(-5px);
+}
+
+.feature-icon {
+font-size: 3rem;
+margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+color: #2d5016;
+margin-bottom: 0.5rem;
+}
+
+/* Policies Section */
+.policies {
+padding: 4rem 2rem;
+background: #fff;
+}
+
+.policy-tabs {
+display: flex;
+gap: 1rem;
+margin-bottom: 2rem;
+flex-wrap: wrap;
+}
+
+.tab-btn {
+padding: 0.75rem 1.5rem;
+background: #e9ecef;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-weight: 600;
+transition: all 0.3s;
+}
+
+.tab-btn.active {
+background: #4a7c2c;
+color: #fff;
+}
+
+.policy-content {
+background: #f8f9fa;
+padding: 2rem;
+border-radius: 10px;
+display: none;
+}
+
+.policy-content.active {
+display: block;
+}
+
+.policy-item {
+background: #fff;
+padding: 1.5rem;
+margin-bottom: 1rem;
+border-radius: 8px;
+border-left: 4px solid #4a7c2c;
+}
+
+.policy-item h4 {
+color: #2d5016;
+margin-bottom: 0.5rem;
+}
+
+.policy-date {
+color: #6c757d;
+font-size: 0.9rem;
+margin-bottom: 0.5rem;
+}
+
+/* Contact Form */
+.contact {
+padding: 4rem 2rem;
+background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.contact-form {
+max-width: 600px;
+margin: 0 auto;
+background: #fff;
+padding: 2rem;
+border-radius: 10px;
+box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.form-group {
+margin-bottom: 1.5rem;
+}
+
+.form-group label {
+display: block;
+margin-bottom: 0.5rem;
+color: #2d5016;
+font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+width: 100%;
+padding: 0.75rem;
+border: 2px solid #e9ecef;
+border-radius: 5px;
+font-size: 1rem;
+transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+outline: none;
+border-color: #4a7c2c;
+}
+
+.form-group textarea {
+resize: vertical;
+min-height: 120px;
+}
+
+.submit-btn {
+background: #4a7c2c;
+color: #fff;
+padding: 1rem 2rem;
+border: none;
+border-radius: 5px;
+font-size: 1rem;
+font-weight: 600;
+cursor: pointer;
+width: 100%;
+transition: background 0.3s;
+}
+
+.submit-btn:hover {
+background: #2d5016;
+}
+
+/* Footer */
+footer {
+background: #2d5016;
+color: #fff;
+text-align: center;
+padding: 2rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+.nav-menu {
+position: fixed;
+left: -100%;
+top: 70px;
+flex-direction: column;
+background: #2d5016;
+width: 100%;
+text-align: center;
+transition: 0.3s;
+padding: 2rem 0;
+gap: 1rem;
+}
+
+body.dark-theme .nav-menu {
+background: #1a2e10;
+}
+
+.nav-menu.active {
+left: 0;
+}
+
+.nav-controls {
+gap: 0.5rem;
+}
+
+.theme-toggle, .lang-toggle {
+padding: 0.4rem 0.8rem;
+font-size: 0.8rem;
+}
+
+.hamburger {
+display: flex;
+}
+
+.marquee-container {
+top: 70px;
+}
+
+.marquee-text {
+font-size: 0.95rem;
+padding: 0 2rem;
+}
+
+.hero h1 {
+font-size: 2rem;
+}
+
+.hero p {
+font-size: 1rem;
+}
+
+.section-title {
+font-size: 1.5rem;
+}
+
+.policy-tabs {
+justify-content: center;
+}
+
+.tab-btn {
+flex: 1 1 45%;
+}
+}
+
+@media (max-width: 480px) {
+nav {
+padding: 1rem;
+}
+
+.logo {
+font-size: 1.4rem;
+}
+
+.hero {
+padding: 2rem 1rem;
+}
+
+.hero h1 {
+font-size: 1.5rem;
+}
+
+.contact-form {
+padding: 1.5rem;
+}
+}
+</style>
+</head>
+<body>
+<!-- Navigation -->
+<nav>
+<div class="nav-container">
+<a href="#" class="logo">🌾 <span id="logoText">AgriSense</span></a>
+<ul class="nav-menu" id="navMenu">
+<li><a href="weather.html" data-en="Weather" data-ne="मौसम">Weather</a></li>
+<li><a href="market.html" data-en="Market" data-ne="बजार">Market</a></li>
+<li><a href="analytics.html" data-en="Analytics" data-ne="विश्लेषण">Analytics</a></li>
+<li><a href="policies.html" data-en="Policies" data-ne="नीतिहरू">Policies</a></li>
+<li><a href="login.html" class="login-btn" data-en="Login" data-ne="लगइन">Login</a></li>
+</ul>
+<div class="nav-controls">
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙 Dark</button>
+<button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">🇳🇵 नेपाली</button>
+<div class="hamburger" id="hamburger">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</div>
+</div>
+</nav>
+
+<!-- Marquee Section -->
+<div class="marquee-container">
+<div class="marquee">
+<span class="marquee-text" id="marquee1">Smart Farming with Smarter Policy</span>
+<span class="marquee-text">•</span>
+<span class="marquee-text" id="marquee2">Right time, right crop, right market</span>
+<span class="marquee-text">•</span>
+<span class="marquee-text" id="marquee1-dup">Smart Farming with Smarter Policy</span>
+<span class="marquee-text">•</span>
+<span class="marquee-text" id="marquee2-dup">Right time, right crop, right market</span>
+<span class="marquee-text">•</span>
+</div>
+</div>
+
+<!-- Hero Section -->
+<section class="hero">
+<div class="hero-content">
+<h1 id="heroTitle">Welcome to AgriSense</h1>
+<p id="heroDesc">Empowering farmers with smart technology, real-time data, and actionable insights. Transform your agricultural practices with data-driven decisions, weather forecasts, market trends, and comprehensive analytics all in one platform.</p>
+<button class="cta-button" id="ctaBtn">Get Started</button>
+</div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+<div class="container">
+<h2 class="section-title" id="servicesTitle">Our Services</h2>
+<div class="feature-grid">
+<div class="feature-card">
+<div class="feature-icon">🌤️</div>
+<h3 id="feature1Title">Weather Forecast</h3>
+<p id="feature1Desc">Get accurate weather predictions to plan your farming activities effectively.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">📊</div>
+<h3 id="feature2Title">Market Intelligence</h3>
+<p id="feature2Desc">Stay updated with real-time market prices and trends for better selling decisions.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">📈</div>
+<h3 id="feature3Title">Analytics Dashboard</h3>
+<p id="feature3Desc">Track your farm performance with comprehensive analytics and insights.</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">📋</div>
+<h3 id="feature4Title">Policy Updates</h3>
+<p id="feature4Desc">Access the latest agricultural policies and government schemes instantly.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Recent Policies Section -->
+<section class="policies" id="policies">
+<div class="container">
+<h2 class="section-title" id="policiesTitle">Recent Policies & Updates</h2>
+<div class="policy-tabs">
+<button class="tab-btn active" onclick="showTab('central')" id="tab1">Central Policies</button>
+<button class="tab-btn" onclick="showTab('state')" id="tab2">State Schemes</button>
+<button class="tab-btn" onclick="showTab('subsidies')" id="tab3">Subsidies</button>
+</div>
+
+<div class="policy-content active" id="central">
+<div class="policy-item">
+<h4 id="policy1Title">PM-KISAN Scheme Extension</h4>
+<p class="policy-date">December 10, 2024</p>
+<p id="policy1Desc">The government has announced the extension of the PM-KISAN scheme with increased financial assistance to eligible farmers.</p>
+</div>
+<div class="policy-item">
+<h4 id="policy2Title">Organic Farming Initiative</h4>
+<p class="policy-date">December 5, 2024</p>
+<p id="policy2Desc">New guidelines released for promoting organic farming practices with technical and financial support.</p>
+</div>
+<div class="policy-item">
+<h4 id="policy3Title">Crop Insurance Updates</h4>
+<p class="policy-date">November 28, 2024</p>
+<p id="policy3Desc">Enhanced coverage under PMFBY with simplified claim procedures for farmers affected by natural calamities.</p>
+</div>
+</div>
+
+<div class="policy-content" id="state">
+<div class="policy-item">
+<h4 id="policy4Title">Regional Irrigation Project</h4>
+<p class="policy-date">December 8, 2024</p>
+<p id="policy4Desc">State government launches new irrigation infrastructure project covering 50,000 hectares.</p>
+</div>
+<div class="policy-item">
+<h4 id="policy5Title">Farmer Training Program</h4>
+<p class="policy-date">December 1, 2024</p>
+<p id="policy5Desc">Free training sessions on modern agricultural techniques and technology adoption.</p>
+</div>
+</div>
+
+<div class="policy-content" id="subsidies">
+<div class="policy-item">
+<h4 id="policy6Title">Equipment Subsidy Scheme</h4>
+<p class="policy-date">December 12, 2024</p>
+<p id="policy6Desc">50% subsidy on agricultural machinery and equipment for small and marginal farmers.</p>
+</div>
+<div class="policy-item">
+<h4 id="policy7Title">Fertilizer Subsidy Update</h4>
+<p class="policy-date">November 30, 2024</p>
+<p id="policy7Desc">Revised subsidy rates announced for various fertilizers to reduce input costs.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Contact Form Section -->
+<section class="contact" id="contact">
+<div class="container">
+<h2 class="section-title" id="contactTitle">Contact Us</h2>
+<form class="contact-form" onsubmit="handleSubmit(event)">
+<div class="form-group">
+<label for="name" id="labelName">Full Name</label>
+<input type="text" id="name" name="name" required>
+</div>
+<div class="form-group">
+<label for="email" id="labelEmail">Email Address</label>
+<input type="email" id="email" name="email" required>
+</div>
+<div class="form-group">
+<label for="phone" id="labelPhone">Phone Number</label>
+<input type="tel" id="phone" name="phone" required>
+</div>
+<div class="form-group">
+<label for="subject" id="labelSubject">Subject</label>
+<input type="text" id="subject" name="subject" required>
+</div>
+<div class="form-group">
+<label for="message" id="labelMessage">Message</label>
+<textarea id="message" name="message" required></textarea>
+</div>
+<button type="submit" class="submit-btn" id="submitBtn">Send Message</button>
+</form>
+</div>
+</section>
+
+<!-- Footer -->
+<footer>
+<p>&copy; 2024 AgriSense. All rights reserved. Empowering farmers with technology.</p>
+</footer>
+
+<script>
+// Language translations
+const translations = {
+en: {
+logoText: 'AgriSense',
+heroTitle: 'Welcome to AgriSense',
+heroDesc: 'Empowering farmers with smart technology, real-time data, and actionable insights. Transform your agricultural practices with data-driven decisions, weather forecasts, market trends, and comprehensive analytics all in one platform.',
+ctaBtn: 'Get Started',
+servicesTitle: 'Our Services',
+feature1Title: 'Weather Forecast',
+feature1Desc: 'Get accurate weather predictions to plan your farming activities effectively.',
+feature2Title: 'Market Intelligence',
+feature2Desc: 'Stay updated with real-time market prices and trends for better selling decisions.',
+feature3Title: 'Analytics Dashboard',
+feature3Desc: 'Track your farm performance with comprehensive analytics and insights.',
+feature4Title: 'Policy Updates',
+feature4Desc: 'Access the latest agricultural policies and government schemes instantly.',
+policiesTitle: 'Recent Policies & Updates',
+tab1: 'Central Policies',
+tab2: 'State Schemes',
+tab3: 'Subsidies',
+contactTitle: 'Contact Us',
+labelName: 'Full Name',
+labelEmail: 'Email Address',
+labelPhone: 'Phone Number',
+labelSubject: 'Subject',
+labelMessage: 'Message',
+submitBtn: 'Send Message',
+themeLight: '☀️ Light',
+themeDark: '🌙 Dark',
+langBtn: '🇳🇵 नेपाली',
+marquee1: 'Smart Farming with Smarter Policy',
+marquee2: 'Right time, right crop, right market',
+policy1Title: 'PM-KISAN Scheme Extension',
+policy1Desc: 'The government has announced the extension of the PM-KISAN scheme with increased financial assistance to eligible farmers.',
+policy2Title: 'Organic Farming Initiative',
+policy2Desc: 'New guidelines released for promoting organic farming practices with technical and financial support.',
+policy3Title: 'Crop Insurance Updates',
+policy3Desc: 'Enhanced coverage under PMFBY with simplified claim procedures for farmers affected by natural calamities.',
+policy4Title: 'Regional Irrigation Project',
+policy4Desc: 'State government launches new irrigation infrastructure project covering 50,000 hectares.',
+policy5Title: 'Farmer Training Program',
+policy5Desc: 'Free training sessions on modern agricultural techniques and technology adoption.',
+policy6Title: 'Equipment Subsidy Scheme',
+policy6Desc: '50% subsidy on agricultural machinery and equipment for small and marginal farmers.',
+policy7Title: 'Fertilizer Subsidy Update',
+policy7Desc: 'Revised subsidy rates announced for various fertilizers to reduce input costs.'
+},
+ne: {
+logoText: 'एग्रीसेन्स',
+heroTitle: 'एग्रीसेन्समा स्वागत छ',
+heroDesc: 'स्मार्ट प्रविधि, वास्तविक समय डेटा र कार्ययोग्य अन्तर्दृष्टिका साथ किसानहरूलाई सशक्तिकरण। डेटा-संचालित निर्णयहरू, मौसम पूर्वानुमान, बजार प्रवृत्ति र सबै एक प्लेटफर्ममा व्यापक विश्लेषणको साथ आफ्नो कृषि अभ्यासलाई रूपान्तरण गर्नुहोस्।',
+ctaBtn: 'सुरु गर्नुहोस्',
+servicesTitle: 'हाम्रा सेवाहरू',
+feature1Title: 'मौसम पूर्वानुमान',
+feature1Desc: 'आफ्नो खेती गतिविधिहरू प्रभावकारी रूपमा योजना बनाउन सटीक मौसम भविष्यवाणी प्राप्त गर्नुहोस्।',
+feature2Title: 'बजार बुद्धिमत्ता',
+feature2Desc: 'राम्रो बिक्री निर्णयहरूको लागि वास्तविक समय बजार मूल्य र प्रवृत्तिसँग अद्यावधिक रहनुहोस्।',
+feature3Title: 'विश्लेषण ड्यासबोर्ड',
+feature3Desc: 'व्यापक विश्लेषण र अन्तर्दृष्टिको साथ आफ्नो फार्म प्रदर्शन ट्र्याक गर्नुहोस्।',
+feature4Title: 'नीति अद्यावधिक',
+feature4Desc: 'तुरुन्तै नवीनतम कृषि नीतिहरू र सरकारी योजनाहरूमा पहुँच गर्नुहोस्।',
+policiesTitle: 'हालका नीतिहरू र अद्यावधिकहरू',
+tab1: 'केन्द्रीय नीतिहरू',
+tab2: 'राज्य योजनाहरू',
+tab3: 'सब्सिडीहरू',
+contactTitle: 'हामीलाई सम्पर्क गर्नुहोस्',
+labelName: 'पूरा नाम',
+labelEmail: 'इमेल ठेगाना',
+labelPhone: 'फोन नम्बर',
+labelSubject: 'विषय',
+labelMessage: 'सन्देश',
+submitBtn: 'सन्देश पठाउनुहोस्',
+themeLight: '☀️ उज्यालो',
+themeDark: '🌙 अँध्यारो',
+langBtn: '🇬🇧 English',
+marquee1: 'स्मार्ट खेती स्मार्ट नीतिसँग',
+marquee2: 'सही समय, सही बाली, सही बजार',
+policy1Title: 'PM-KISAN योजना विस्तार',
+policy1Desc: 'सरकारले योग्य किसानहरूलाई बढेको आर्थिक सहायताको साथ PM-KISAN योजनाको विस्तारको घोषणा गरेको छ।',
+policy2Title: 'जैविक खेती पहल',
+policy2Desc: 'प्राविधिक र आर्थिक सहयोगको साथ जैविक खेती अभ्यासलाई प्रवर्द्धन गर्न नयाँ दिशानिर्देश जारी गरिएको छ।',
+policy3Title: 'बाली बीमा अद्यावधिक',
+policy3Desc: 'प्राकृतिक प्रकोपबाट प्रभावित किसानहरूको लागि सरलीकृत दावी प्रक्रियाको साथ PMFBY अन्तर्गत विस्तारित कभरेज।',
+policy4Title: 'क्षेत्रीय सिँचाइ परियोजना',
+policy4Desc: 'राज्य सरकारले ५०,००० हेक्टर क्षेत्रफल कभर गर्ने नयाँ सिँचाइ पूर्वाधार परियोजना सुरु गरेको छ।',
+policy5Title: 'किसान तालिम कार्यक्रम',
+policy5Desc: 'आधुनिक कृषि प्रविधि र प्रविधि अपनाउने बारे निःशुल्क तालिम सत्रहरू।',
+policy6Title: 'उपकरण सब्सिडी योजना',
+policy6Desc: 'साना र सीमान्त किसानहरूको लागि कृषि मेसिनरी र उपकरणहरूमा ५०% सब्सिडी।',
+policy7Title: 'मल सब्सिडी अद्यावधिक',
+policy7Desc: 'इनपुट लागत घटाउन विभिन्न मलहरूको लागि संशोधित सब्सिडी दरहरू घोषणा गरिएको छ।'
+}
+};
+
+let currentLang = 'en';
+let isDarkTheme = false;
+
+// Mobile menu toggle
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('navMenu');
+
+hamburger.addEventListener('click', () => {
+navMenu.classList.toggle('active');
+});
+
+// Close menu when clicking on a link
+document.querySelectorAll('.nav-menu a').forEach(link => {
+link.addEventListener('click', () => {
+navMenu.classList.remove('active');
+});
+});
+
+// Theme toggle function
+function toggleTheme() {
+isDarkTheme = !isDarkTheme;
+document.body.classList.toggle('dark-theme');
+
+const themeBtn = document.getElementById('themeToggle');
+if (isDarkTheme) {
+themeBtn.textContent = translations[currentLang].themeLight;
+} else {
+themeBtn.textContent = translations[currentLang].themeDark;
+}
+
+// Save theme preference
+localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+}
+
+// Language toggle function
+function toggleLanguage() {
+currentLang = currentLang === 'en' ? 'ne' : 'en';
+updateLanguage();
+
+// Save language preference
+localStorage.setItem('language', currentLang);
+}
+
+function updateLanguage() {
+const trans = translations[currentLang];
+
+// Update navigation items
+document.querySelectorAll('.nav-menu a').forEach(link => {
+const text = currentLang === 'en' ? link.getAttribute('data-en') : link.getAttribute('data-ne');
+if (text) link.textContent = text;
+});
+
+// Update all text elements
+document.getElementById('logoText').textContent = trans.logoText;
+document.getElementById('heroTitle').textContent = trans.heroTitle;
+document.getElementById('heroDesc').textContent = trans.heroDesc;
+document.getElementById('ctaBtn').textContent = trans.ctaBtn;
+document.getElementById('servicesTitle').textContent = trans.servicesTitle;
+document.getElementById('feature1Title').textContent = trans.feature1Title;
+document.getElementById('feature1Desc').textContent = trans.feature1Desc;
+document.getElementById('feature2Title').textContent = trans.feature2Title;
+document.getElementById('feature2Desc').textContent = trans.feature2Desc;
+document.getElementById('feature3Title').textContent = trans.feature3Title;
+document.getElementById('feature3Desc').textContent = trans.feature3Desc;
+document.getElementById('feature4Title').textContent = trans.feature4Title;
+document.getElementById('feature4Desc').textContent = trans.feature4Desc;
+document.getElementById('policiesTitle').textContent = trans.policiesTitle;
+document.getElementById('tab1').textContent = trans.tab1;
+document.getElementById('tab2').textContent = trans.tab2;
+document.getElementById('tab3').textContent = trans.tab3;
+document.getElementById('contactTitle').textContent = trans.contactTitle;
+document.getElementById('labelName').textContent = trans.labelName;
+document.getElementById('labelEmail').textContent = trans.labelEmail;
+document.getElementById('labelPhone').textContent = trans.labelPhone;
+document.getElementById('labelSubject').textContent = trans.labelSubject;
+document.getElementById('labelMessage').textContent = trans.labelMessage;
+document.getElementById('submitBtn').textContent = trans.submitBtn;
+
+// Update marquee
+document.getElementById('marquee1').textContent = trans.marquee1;
+document.getElementById('marquee2').textContent = trans.marquee2;
+document.getElementById('marquee1-dup').textContent = trans.marquee1;
+document.getElementById('marquee2-dup').textContent = trans.marquee2;
+
+// Update policies
+document.getElementById('policy1Title').textContent = trans.policy1Title;
+document.getElementById('policy1Desc').textContent = trans.policy1Desc;
+document.getElementById('policy2Title').textContent = trans.policy2Title;
+document.getElementById('policy2Desc').textContent = trans.policy2Desc;
+document.getElementById('policy3Title').textContent = trans.policy3Title;
+document.getElementById('policy3Desc').textContent = trans.policy3Desc;
+document.getElementById('policy4Title').textContent = trans.policy4Title;
+document.getElementById('policy4Desc').textContent = trans.policy4Desc;
+document.getElementById('policy5Title').textContent = trans.policy5Title;
+document.getElementById('policy5Desc').textContent = trans.policy5Desc;
+document.getElementById('policy6Title').textContent = trans.policy6Title;
+document.getElementById('policy6Desc').textContent = trans.policy6Desc;
+document.getElementById('policy7Title').textContent = trans.policy7Title;
+document.getElementById('policy7Desc').textContent = trans.policy7Desc;
+
+// Update toggle buttons
+document.getElementById('langToggle').textContent = trans.langBtn;
+document.getElementById('themeToggle').textContent = isDarkTheme ? trans.themeLight : trans.themeDark;
+}
+
+// Load saved preferences
+window.addEventListener('DOMContentLoaded', () => {
+const savedTheme = localStorage.getItem('theme');
+const savedLang = localStorage.getItem('language');
+
+if (savedTheme === 'dark') {
+toggleTheme();
+}
+
+if (savedLang === 'ne') {
+toggleLanguage();
+}
+});
+
+// Policy tabs
+function showTab(tabName) {
+const contents = document.querySelectorAll('.policy-content');
+const buttons = document.querySelectorAll('.tab-btn');
+
+contents.forEach(content => {
+content.classList.remove('active');
+});
+
+buttons.forEach(button => {
+button.classList.remove('active');
+});
+
+document.getElementById(tabName).classList.add('active');
+event.target.classList.add('active');
+}
+
+// Form submission
+function handleSubmit(event) {
+event.preventDefault();
+const message = currentLang === 'en'
+? 'Thank you for contacting us! We will get back to you soon.'
+: 'हामीलाई सम्पर्क गर्नुभएकोमा धन्यवाद! हामी चाँडै तपाईंलाई सम्पर्क गर्नेछौं।';
+alert(message);
+event.target.reset();
+}
+</script>
+</body>
+</html>

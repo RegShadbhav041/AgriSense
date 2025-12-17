@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AgriSense</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Dark Theme */
+        body.dark-theme {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme nav {
+            background: linear-gradient(135deg, #1a2e10 0%, #2d4a1f 100%);
+        }
+
+        body.dark-theme .login-container {
+            background: linear-gradient(135deg, #2d4a1f 0%, #3d5f2a 100%);
+        }
+
+        body.dark-theme .login-form {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .form-group input {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+
+        body.dark-theme .register-form {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .register-form input {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+
+        body.dark-theme footer {
+            background: #1a2e10;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle, .lang-toggle {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle:hover, .lang-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #a8d08d;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Login Container */
+        .login-container {
+            flex: 1;
+            background: linear-gradient(135deg, #4a7c2c 0%, #6b9d47 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .auth-sidebar {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            color: #fff;
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .auth-sidebar h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .auth-sidebar p {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .feature-icon {
+            font-size: 1.2rem;
+        }
+
+        .auth-forms {
+            flex: 1;
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn.active {
+            color: #4a7c2c;
+            border-bottom-color: #4a7c2c;
+        }
+
+        .login-form, .register-form {
+            display: none;
+        }
+
+        .login-form.active, .register-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2d5016;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4a7c2c;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .forgot-link {
+            color: #4a7c2c;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            background: #4a7c2c;
+            color: #fff;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #2d5016;
+        }
+
+        .social-login {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .social-title {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            background: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .social-btn:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: #2d5016;
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: #2d5016;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                padding: 2rem 0;
+                gap: 1rem;
+            }
+
+            body.dark-theme .nav-menu {
+                background: #1a2e10;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .auth-wrapper {
+                flex-direction: column;
+                max-width: 400px;
+            }
+
+            .auth-sidebar {
+                padding: 2rem 1.5rem;
+                text-align: center;
+            }
+
+            .auth-sidebar h2 {
+                font-size: 1.5rem;
+            }
+
+            .auth-forms {
+                padding: 2rem 1.5rem;
+            }
+
+            .social-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">🌾 <span id="logoText">AgriSense</span></a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="weather.html" data-en="Weather" data-ne="मौसम">Weather</a></li>
+                <li><a href="market.html" data-en="Market" data-ne="बजार">Market</a></li>
+                <li><a href="analytics.html" data-en="Analytics" data-ne="विश्लेषण">Analytics</a></li>
+                <li><a href="index.html#policies" data-en="Policies" data-ne="नीतिहरू">Policies</a></li>
+                <li><a href="login.html" class="active" data-en="Login" data-ne="लगइन">Login</a></li>
+            </ul>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙 Dark</button>
+                <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">🇳🇵 नेपाली</button>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="auth-wrapper">
+            <div class="auth-sidebar">
+                <h2 id="welcomeTitle">Welcome to AgriSense Nepal</h2>
+                <p id="welcomeDesc">Your gateway to smart farming solutions and Nepali agricultural insights</p>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon">🌤️</span>
+                        <span id="feature1">Real-time weather forecasts</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">📊</span>
+                        <span id="feature2">Kalimati market prices</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">📈</span>
+                        <span id="feature3">Farm analytics dashboard</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">📋</span>
+                        <span id="feature4">Agricultural policies</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="auth-forms">
+                <div class="form-tabs">
+                    <button class="tab-btn active" onclick="showTab('login')" id="loginTab">Login</button>
+                    <button class="tab-btn" onclick="showTab('register')" id="registerTab">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <form class="login-form active" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email" id="emailLabel">Email Address</label>
+                        <input type="email" id="login-email" name="email" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password" id="passwordLabel">Password</label>
+                        <input type="password" id="login-password" name="password" required>
+                    </div>
+                    <div class="remember-forgot">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember">
+                            <label for="remember" id="rememberLabel">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="submit-btn" id="loginBtn">Sign In</button>
+                </form>
+
+                <!-- Register Form -->
+                <form class="register-form" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="register-name" id="nameLabel">Full Name</label>
+                        <input type="text" id="register-name" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email" id="emailLabel2">Email Address</label>
+                        <input type="email" id="register-email" name="email" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-phone" id="phoneLabel">Phone Number</label>
+                        <input type="tel" id="register-phone" name="phone" placeholder="98XXXXXXXX" pattern="98[0-9]{8}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password" id="passwordLabel2">Password</label>
+                        <input type="password" id="register-password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm" id="confirmLabel">Confirm Password</label>
+                        <input type="password" id="register-confirm" name="confirm" required>
+                    </div>
+                    <button type="submit" class="submit-btn" id="registerBtn">Create Account</button>
+                </form>
+
+                <div class="social-login">
+                    <p class="social-title" id="orText">Or continue with</p>
+                    <div class="social-buttons">
+                        <button class="social-btn" onclick="socialLogin('google')">
+                            🌐 Google
+                        </button>
+                        <button class="social-btn" onclick="socialLogin('facebook')">
+                            📘 Facebook
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 AgriSense. All rights reserved. Empowering Nepali farmers with technology.</p>
+    </footer>
+
+    <script>
+        // Language translations
+        const translations = {
+            en: {
+                logoText: 'AgriSense',
+                welcomeTitle: 'Welcome to AgriSense Nepal',
+                welcomeDesc: 'Your gateway to smart farming solutions and Nepali agricultural insights',
+                feature1: 'Real-time weather forecasts',
+                feature2: 'Kalimati market prices',
+                feature3: 'Farm analytics dashboard',
+                feature4: 'Agricultural policies',
+                loginTab: 'Login',
+                registerTab: 'Register',
+                emailLabel: 'Email Address',
+                passwordLabel: 'Password',
+                rememberLabel: 'Remember me',
+                forgotLink: 'Forgot password?',
+                loginBtn: 'Sign In',
+                nameLabel: 'Full Name',
+                phoneLabel: 'Phone Number',
+                emailLabel2: 'Email Address',
+                passwordLabel2: 'Password',
+                confirmLabel: 'Confirm Password',
+                registerBtn: 'Create Account',
+                orText: 'Or continue with',
+                themeLight: '☀️ Light',
+                themeDark: '🌙 Dark',
+                langBtn: '🇳🇵 नेपाली'
+            },
+            ne: {
+                logoText: 'एग्रीसेन्स',
+                welcomeTitle: 'एग्रीसेन्स नेपालमा स्वागत छ',
+                welcomeDesc: 'स्मार्ट खेती समाधान र नेपाली कृषि अन्तर्दृष्टिको तपाईंको प्रवेशद्वार',
+                feature1: 'वास्तविक समय मौसम पूर्वानुमान',
+                feature2: 'कालिमती बजार मूल्य',
+                feature3: 'खेती विश्लेषण ड्यासबोर्ड',
+                feature4: 'कृषि नीतिहरू',
+                loginTab: 'लगइन',
+                registerTab: 'दर्ता',
+                emailLabel: 'इमेल ठेगाना',
+                passwordLabel: 'पासवर्ड',
+                rememberLabel: 'मलाई सम्झनुहोस्',
+                forgotLink: 'पासवर्ड बिर्सनुभयो?',
+                loginBtn: 'साइन इन गर्नुहोस्',
+                nameLabel: 'पूरा नाम',
+                phoneLabel: 'फोन नम्बर',
+                emailLabel2: 'इमेल ठेगाना',
+                passwordLabel2: 'पासवर्ड',
+                confirmLabel: 'पासवर्ड पुष्टि गर्नुहोस्',
+                registerBtn: 'खाता बनाउनुहोस्',
+                orText: 'वा यससँग जारी राख्नुहोस्',
+                themeLight: '☀️ उज्यालो',
+                themeDark: '🌙 अँध्यारो',
+                langBtn: '🇬🇧 English'
+            }
+        };
+
+        let currentLang = 'en';
+        let isDarkTheme = false;
+
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Theme toggle function
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme');
+            
+            const themeBtn = document.getElementById('themeToggle');
+            if (isDarkTheme) {
+                themeBtn.textContent = translations[currentLang].themeLight;
+            } else {
+                themeBtn.textContent = translations[currentLang].themeDark;
+            }
+            
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        }
+
+        // Language toggle function
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ne' : 'en';
+            updateLanguage();
+            localStorage.setItem('language', currentLang);
+        }
+
+        function updateLanguage() {
+            const trans = translations[currentLang];
+            
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                const text = currentLang === 'en' ? link.getAttribute('data-en') : link.getAttribute('data-ne');
+                if (text) link.textContent = text;
+            });
+            
+            document.getElementById('logoText').textContent = trans.logoText;
+            document.getElementById('welcomeTitle').textContent = trans.welcomeTitle;
+            document.getElementById('welcomeDesc').textContent = trans.welcomeDesc;
+            document.getElementById('feature1').textContent = trans.feature1;
+            document.getElementById('feature2').textContent = trans.feature2;
+            document.getElementById('feature3').textContent = trans.feature3;
+            document.getElementById('feature4').textContent = trans.feature4;
+            document.getElementById('loginTab').textContent = trans.loginTab;
+            document.getElementById('registerTab').textContent = trans.registerTab;
+            document.getElementById('emailLabel').textContent = trans.emailLabel;
+            document.getElementById('passwordLabel').textContent = trans.passwordLabel;
+            document.getElementById('rememberLabel').textContent = trans.rememberLabel;
+            document.getElementById('forgotLink').textContent = trans.forgotLink;
+            document.getElementById('loginBtn').textContent = trans.loginBtn;
+            document.getElementById('nameLabel').textContent = trans.nameLabel;
+            document.getElementById('phoneLabel').textContent = trans.phoneLabel;
+            document.getElementById('emailLabel2').textContent = trans.emailLabel2;
+            document.getElementById('passwordLabel2').textContent = trans.passwordLabel2;
+            document.getElementById('confirmLabel').textContent = trans.confirmLabel;
+            document.getElementById('registerBtn').textContent = trans.registerBtn;
+            document.getElementById('orText').textContent = trans.orText;
+            
+            document.getElementById('langToggle').textContent = trans.langBtn;
+            document.getElementById('themeToggle').textContent = isDarkTheme ? trans.themeLight : trans.themeDark;
+        }
+
+        // Tab switching
+        function showTab(tabName) {
+            const loginForm = document.querySelector('.login-form');
+            const registerForm = document.querySelector('.register-form');
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+
+            if (tabName === 'login') {
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+            } else {
+                loginForm.classList.remove('active');
+                registerForm.classList.add('active');
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+            }
+        }
+
+        // Form submissions
+        function handleLogin(event) {
+            event.preventDefault();
+            const message = currentLang === 'en' 
+                ? 'Login successful! Redirecting to dashboard...'
+                : 'लगइन सफल! ड्यासबोर्डमा रिडाइरेक्ट गर्दै...';
+            alert(message);
+            // Redirect to dashboard or home page
+            window.location.href = 'index.html';
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            if (password !== confirm) {
+                const errorMsg = currentLang === 'en'
+                    ? 'Passwords do not match!'
+                    : 'पासवर्डहरू मेल खाँदैनन्!';
+                alert(errorMsg);
+                return;
+            }
+            
+            const message = currentLang === 'en'
+                ? 'Registration successful! Please login.'
+                : 'दर्ता सफल! कृपया लगइन गर्नुहोस्।';
+            alert(message);
+            showTab('login');
+        }
+
+        function socialLogin(provider) {
+            const message = currentLang === 'en'
+                ? `Logging in with ${provider}...`
+                : `${provider} सँग लगइन गर्दै...`;
+            alert(message);
+        }
+
+        // Load saved preferences
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const savedLang = localStorage.getItem('language');
+            
+            if (savedTheme === 'dark') {
+                toggleTheme();
+            }
+            
+            if (savedLang === 'ne') {
+                toggleLanguage();
+            }
+        });
+    </script>
+</body>
+</html>

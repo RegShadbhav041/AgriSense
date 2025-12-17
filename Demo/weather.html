@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast - AgriSense</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Dark Theme */
+        body.dark-theme {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme nav {
+            background: linear-gradient(135deg, #1a2e10 0%, #2d4a1f 100%);
+        }
+
+        body.dark-theme .weather-main {
+            background: linear-gradient(135deg, #2d4a1f 0%, #3d5f2a 100%);
+        }
+
+        body.dark-theme .weather-cards {
+            background: #242424;
+        }
+
+        body.dark-theme .weather-card {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .forecast-section {
+            background: #1a1a1a;
+        }
+
+        body.dark-theme .forecast-card {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .alerts-section {
+            background: #242424;
+        }
+
+        body.dark-theme .alert-card {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme footer {
+            background: #1a2e10;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle, .lang-toggle {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle:hover, .lang-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #a8d08d;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Weather Main Section */
+        .weather-main {
+            background: linear-gradient(135deg, #4a7c2c 0%, #6b9d47 100%);
+            color: #fff;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .current-weather {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .weather-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .temperature {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .weather-description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            text-transform: capitalize;
+        }
+
+        .location {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .coordinates {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        .refresh-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(180deg);
+        }
+
+        .refresh-btn.loading {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .last-updated {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 1rem;
+        }
+
+        /* Weather Cards */
+        .weather-cards {
+            padding: 3rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #2d5016;
+            margin-bottom: 2rem;
+        }
+
+        .weather-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .weather-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .weather-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .weather-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .weather-card-title {
+            color: #2d5016;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .weather-card-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4a7c2c;
+        }
+
+        /* Forecast Section */
+        .forecast-section {
+            padding: 3rem 2rem;
+            background: #fff;
+        }
+
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .forecast-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .forecast-card:hover {
+            transform: translateY(-3px);
+            background: #e9ecef;
+        }
+
+        .forecast-day {
+            font-weight: 600;
+            color: #2d5016;
+            margin-bottom: 0.5rem;
+        }
+
+        .forecast-icon {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+        }
+
+        .forecast-temp {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4a7c2c;
+        }
+
+        /* Alerts Section */
+        .alerts-section {
+            padding: 3rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .alert-card {
+            background: #fff;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid #ff6b6b;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .alert-card:hover {
+            transform: translateX(5px);
+        }
+
+        .alert-icon {
+            font-size: 2rem;
+        }
+
+        .alert-content h4 {
+            color: #2d5016;
+            margin-bottom: 0.25rem;
+        }
+
+        .alert-time {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .warning-message {
+            background: #fff3cd;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        /* API Status */
+        .api-status {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .api-status.online {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+
+        .api-status.offline {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .api-status.demo {
+            background: rgba(255, 193, 7, 0.2);
+            color: #856404;
+            border: 1px solid #ffc107;
+        }
+
+        /* Location Selector */
+        .location-selector {
+            position: absolute;
+            top: 4rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.9);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            padding: 0.5rem;
+            color: #333;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .location-selector:hover {
+            background: rgba(255,255,255,1);
+        }
+
+        .location-selector option {
+            background: #fff;
+            color: #333;
+        }
+
+        /* Footer */
+        footer {
+            background: #2d5016;
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: #2d5016;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                padding: 2rem 0;
+                gap: 1rem;
+            }
+
+            body.dark-theme .nav-menu {
+                background: #1a2e10;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .temperature {
+                font-size: 2.5rem;
+            }
+
+            .weather-icon {
+                font-size: 4rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .location-selector {
+                top: 5rem;
+                right: 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">🌾 <span id="logoText">AgriSense</span></a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="weather.html" class="active" data-en="Weather" data-ne="मौसम">Weather</a></li>
+                <li><a href="market.html" data-en="Market" data-ne="बजार">Market</a></li>
+                <li><a href="analytics.html" data-en="Analytics" data-ne="विश्लेषण">Analytics</a></li>
+                <li><a href="index.html#policies" data-en="Policies" data-ne="नीतिहरू">Policies</a></li>
+                <li><a href="login.html" class="login-btn" data-en="Login" data-ne="लगइन">Login</a></li>
+            </ul>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙 Dark</button>
+                <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">🇳🇵 नेपाली</button>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Current Weather -->
+    <section class="weather-main">
+        <div class="api-status demo" id="apiStatus">🟡 Demo Mode</div>
+        <button class="refresh-btn" id="refreshBtn" onclick="refreshWeather()">🔄</button>
+        <select class="location-selector" id="locationSelector" onchange="changeLocation()">
+            <option value="27.7172,85.3240">Kathmandu</option>
+            <option value="26.4525,87.2718">Biratnagar</option>
+            <option value="28.2096,83.9856">Pokhara</option>
+            <option value="27.7017,85.3206">Patan</option>
+            <option value="27.6929,85.3291">Bhaktapur</option>
+            <option value="26.4609,87.2718">Dharan</option>
+            <option value="27.4284,84.9888">Bharatpur</option>
+            <option value="28.9972,80.9977">Nepalgunj</option>
+            <option value="29.2693,81.5682">Dhangadhi</option>
+            <option value="27.7009,85.3000">Kirtipur</option>
+        </select>
+        <div class="current-weather" id="currentWeather">
+            <div class="weather-icon" id="weatherIcon">🌤️</div>
+            <div class="temperature" id="temperature">--°C</div>
+            <div class="weather-description" id="weatherDesc">Loading...</div>
+            <div class="location">
+                📍 <span id="location">Kathmandu, Nepal</span>
+            </div>
+            <div class="coordinates" id="coordinates">Lat: 27.7172, Lon: 85.3240</div>
+            <div class="last-updated" id="lastUpdated"></div>
+        </div>
+    </section>
+
+    <!-- Weather Details -->
+    <section class="weather-cards">
+        <div class="container">
+            <h2 class="section-title" id="detailsTitle">Weather Details</h2>
+            <div class="weather-grid">
+                <div class="weather-card">
+                    <div class="weather-card-icon">💧</div>
+                    <div class="weather-card-title" id="humidityTitle">Humidity</div>
+                    <div class="weather-card-value" id="humidity">--%</div>
+                </div>
+                <div class="weather-card">
+                    <div class="weather-card-icon">💨</div>
+                    <div class="weather-card-title" id="windTitle">Wind Speed</div>
+                    <div class="weather-card-value" id="windSpeed">-- km/h</div>
+                </div>
+                <div class="weather-card">
+                    <div class="weather-card-icon">🌧️</div>
+                    <div class="weather-card-title" id="rainTitle">Rainfall</div>
+                    <div class="weather-card-value" id="rainfall">-- mm</div>
+                </div>
+                <div class="weather-card">
+                    <div class="weather-card-icon">🌡️</div>
+                    <div class="weather-card-title" id="feelsTitle">Feels Like</div>
+                    <div class="weather-card-value" id="feelsLike">--°C</div>
+                </div>
+                <div class="weather-card">
+                    <div class="weather-card-icon">☁️</div>
+                    <div class="weather-card-title" id="cloudTitle">Cloud Cover</div>
+                    <div class="weather-card-value" id="cloudCover">--%</div>
+                </div>
+                <div class="weather-card">
+                    <div class="weather-card-icon">👁️</div>
+                    <div class="weather-card-title" id="visibilityTitle">Visibility</div>
+                    <div class="weather-card-value" id="visibility">-- km</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7-Day Forecast -->
+    <section class="forecast-section">
+        <div class="container">
+            <h2 class="section-title" id="forecastTitle">7-Day Forecast</h2>
+            <div class="forecast-grid" id="forecastGrid">
+                <!-- Forecast cards will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Agricultural Alerts -->
+    <section class="alerts-section">
+        <div class="container">
+            <h2 class="section-title" id="alertsTitle">Agricultural Weather Alerts</h2>
+            <div id="alertsContainer">
+                <!-- Alerts will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 AgriSense. All rights reserved. Empowering Nepali farmers with technology.</p>
+    </footer>
+
+    <script>
+        // Nepal major cities with coordinates
+        const LOCATIONS = {
+            'Kathmandu': { lat: 27.7172, lon: 85.3240, name: 'Kathmandu, Nepal' },
+            'Biratnagar': { lat: 26.4525, lon: 87.2718, name: 'Biratnagar, Nepal' },
+            'Pokhara': { lat: 28.2096, lon: 83.9856, name: 'Pokhara, Nepal' },
+            'Patan': { lat: 27.7017, lon: 85.3206, name: 'Patan, Nepal' },
+            'Bhaktapur': { lat: 27.6929, lon: 85.3291, name: 'Bhaktapur, Nepal' },
+            'Dharan': { lat: 26.4609, lon: 87.2718, name: 'Dharan, Nepal' },
+            'Bharatpur': { lat: 27.4284, lon: 84.9888, name: 'Bharatpur, Nepal' },
+            'Nepalgunj': { lat: 28.9972, lon: 80.9977, name: 'Nepalgunj, Nepal' },
+            'Dhangadhi': { lat: 29.2693, lon: 81.5682, name: 'Dhangadhi, Nepal' },
+            'Kirtipur': { lat: 27.7009, lon: 85.3000, name: 'Kirtipur, Nepal' }
+        };
+
+        let currentLocation = 'Kathmandu';
+        
+        // Weather icon mapping
+        const weatherIcons = {
+            'clear': '☀️', 'mainly-clear': '🌤️', 'partly-cloudy': '⛅',
+            'overcast': '☁️', 'fog': '🌫️', 'drizzle': '🌧️',
+            'rain': '🌧️', 'heavy-rain': '🌧️', 'snow': '❄️',
+            'thunderstorm': '⛈️', 'freezing-rain': '🌨️'
+        };
+
+        // Language translations
+        const translations = {
+            en: {
+                logoText: 'AgriSense',
+                detailsTitle: 'Weather Details',
+                humidityTitle: 'Humidity',
+                windTitle: 'Wind Speed',
+                rainTitle: 'Rainfall',
+                feelsTitle: 'Feels Like',
+                cloudTitle: 'Cloud Cover',
+                visibilityTitle: 'Visibility',
+                forecastTitle: '7-Day Forecast',
+                alertsTitle: 'Agricultural Weather Alerts',
+                alert1Title: 'Monsoon Approaching',
+                alert1Desc: 'Heavy rainfall expected in Terai region next week. Prepare fields for paddy transplantation.',
+                alert2Title: 'High Temperature in Hills',
+                alert2Desc: 'Temperature rising above 30°C in hilly regions. Ensure adequate irrigation for vegetable crops.',
+                alert3Title: 'Strong Winds Alert',
+                alert3Desc: 'Windy conditions expected in Kathmandu Valley. Secure greenhouse structures and maize crops.',
+                day1: 'Monday',
+                day2: 'Tuesday',
+                day3: 'Wednesday',
+                day4: 'Thursday',
+                day5: 'Friday',
+                day6: 'Saturday',
+                day7: 'Sunday',
+                themeLight: '☀️ Light',
+                themeDark: '🌙 Dark',
+                langBtn: '🇳🇵 नेपाली',
+                loadingText: 'Loading weather data...',
+                errorText: 'Failed to load weather data. Using demo data.',
+                successText: 'Weather data loaded successfully!',
+                demoText: 'Using demo weather data. API not available.',
+                lastUpdated: 'Last updated: ',
+                locationText: 'Kathmandu, Nepal',
+                apiOnline: '🟢 API Online',
+                apiOffline: '🔴 API Offline',
+                apiDemo: '🟡 Demo Mode'
+            },
+            ne: {
+                logoText: 'एग्रीसेन्स',
+                detailsTitle: 'मौसम विवरण',
+                humidityTitle: 'आर्द्रता',
+                windTitle: 'हावाको गति',
+                rainTitle: 'वर्षा',
+                feelsTitle: 'यस्तो महसुस हुन्छ',
+                cloudTitle: 'बादल आवरण',
+                visibilityTitle: 'दृश्यता',
+                forecastTitle: '७ दिने पूर्वानुमान',
+                alertsTitle: 'कृषि मौसम चेतावनी',
+                alert1Title: 'मनसुन आउँदै',
+                alert1Desc: 'आउँदो हप्ता तराई क्षेत्रमा भारी वर्षाको अपेक्षा। धान रोप्नको लागि खेत तयार गर्नुहोस्।',
+                alert2Title: 'पहाडमा उच्च तापक्रम',
+                alert2Desc: 'पहाडी क्षेत्रहरूमा तापक्रम ३०°C भन्दा माथि बढ्दैछ। तरकारी बालीहरूको लागि पर्याप्त सिँचाइ सुनिश्चित गर्नुहोस्।',
+                alert3Title: 'बलियो हावा चेतावनी',
+                alert3Desc: 'काठमाडौं उपत्यकामा हावाले भरिएको अवस्थाको अपेक्षा। ग्रीनहाउस संरचना र मकै बालीहरू सुरक्षित गर्नुहोस्।',
+                day1: 'सोमबार',
+                day2: 'मंगलबार',
+                day3: 'बुधबार',
+                day4: 'बिहीबार',
+                day5: 'शुक्रबार',
+                day6: 'शनिबार',
+                day7: 'आइतबार',
+                themeLight: '☀️ उज्यालो',
+                themeDark: '🌙 अँध्यारो',
+                langBtn: '🇬🇧 English',
+                loadingText: 'मौसम डेटा लोड गर्दै...',
+                errorText: 'मौसम डेटा लोड गर्न असफल भयो। डेमो डेटा प्रयोग गर्दैछ।',
+                successText: 'मौसम डेटा सफलतापूर्वक लोड भयो!',
+                demoText: 'डेमो मौसम डेटा प्रयोग गर्दैछ। API उपलब्ध छैन।',
+                lastUpdated: 'अन्तिम अपडेट: ',
+                locationText: 'काठमाडौं, नेपाल',
+                apiOnline: '🟢 API अनलाइन',
+                apiOffline: '🔴 API अफलाइन',
+                apiDemo: '🟡 डेमो मोड'
+            }
+        };
+
+        let currentLang = 'en';
+        let isDarkTheme = false;
+        let weatherData = null;
+        let useDemoData = true; // Start with demo data
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPreferences();
+            generateDemoWeatherData();
+            updateWeatherDisplay();
+            showNotification(translations[currentLang].demoText, 'warning');
+            // Try to fetch real data every 30 seconds
+            setInterval(tryFetchRealData, 30000);
+        });
+
+        // Load saved preferences
+        function loadPreferences() {
+            const savedTheme = localStorage.getItem('theme');
+            const savedLang = localStorage.getItem('language');
+            const savedLocation = localStorage.getItem('selectedLocation');
+            
+            if (savedTheme === 'dark') {
+                toggleTheme();
+            }
+            
+            if (savedLang === 'ne') {
+                toggleLanguage();
+            }
+            
+            if (savedLocation && LOCATIONS[savedLocation]) {
+                currentLocation = savedLocation;
+                document.getElementById('locationSelector').value = LOCATIONS[savedLocation].lat + ',' + LOCATIONS[savedLocation].lon;
+            }
+        }
+
+        // Try to fetch real weather data (will likely fail due to CORS)
+        async function tryFetchRealData() {
+            // Try OpenMeteo API
+            try {
+                const location = LOCATIONS[currentLocation];
+                const response = await fetch(
+                    `https://api.open-meteo.com/v1/forecast?latitude=${location.lat}&longitude=${location.lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m,precipitation,cloudcover,visibility&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto&forecast_days=7`
+                );
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    weatherData = convertOpenMeteoData(data);
+                    useDemoData = false;
+                    updateWeatherDisplay();
+                    updateAPIStatus('online');
+                    showNotification(translations[currentLang].successText, 'success');
+                    return;
+                }
+            } catch (error) {
+                console.log('OpenMeteo API failed:', error);
+            }
+
+            // Try WeatherAPI (free tier)
+            try {
+                const location = LOCATIONS[currentLocation];
+                const response = await fetch(
+                    `https://api.weatherapi.com/v1/current.json?key=demo&q=${location.lat},${location.lon}&aqi=no`
+                );
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    weatherData = convertWeatherAPIData(data);
+                    useDemoData = false;
+                    updateWeatherDisplay();
+                    updateAPIStatus('online');
+                    showNotification(translations[currentLang].successText, 'success');
+                    return;
+                }
+            } catch (error) {
+                console.log('WeatherAPI failed:', error);
+            }
+
+            // If all APIs fail, continue with demo data
+            updateAPIStatus('offline');
+        }
+
+        // Convert OpenMeteo data to our format
+        function convertOpenMeteoData(data) {
+            const current = data.current_weather;
+            const hourly = data.hourly;
+            const daily = data.daily;
+            
+            return {
+                current: {
+                    name: LOCATIONS[currentLocation].name.split(',')[0],
+                    main: {
+                        temp: current.temperature,
+                        feels_like: current.apparent_temperature,
+                        humidity: hourly[0].relativehumidity_2m,
+                        pressure: 1013
+                    },
+                    weather: [{
+                        description: getWeatherDescription(current.weathercode),
+                        icon: getWeatherIcon(current.weathercode)
+                    }],
+                    wind: {
+                        speed: hourly[0].windspeed_10m
+                    },
+                    clouds: {
+                        all: hourly[0].cloudcover
+                    },
+                    visibility: hourly[0].visibility,
+                    rain: {
+                        '1h': hourly[0].precipitation
+                    }
+                },
+                forecast: {
+                    list: daily.map((day, index) => ({
+                        dt: day.time,
+                        main: {
+                            temp: (day.temperature_2m_max + day.temperature_2m_min) / 2,
+                            temp_max: day.temperature_2m_max,
+                            temp_min: day.temperature_2m_min
+                        },
+                        weather: [{
+                            description: 'partly cloudy',
+                            icon: '02d'
+                        }],
+                        rain: day.precipitation_sum > 0 ? { '1h': day.precipitation_sum } : null
+                    }))
+                }
+            };
+        }
+
+        // Convert WeatherAPI data to our format
+        function convertWeatherAPIData(data) {
+            const current = data.current;
+            
+            return {
+                current: {
+                    name: current.location.name,
+                    main: {
+                        temp: current.temp_c,
+                        feels_like: current.feelslike_c,
+                        humidity: current.humidity,
+                        pressure: current.pressure_mb
+                    },
+                    weather: [{
+                        description: current.condition.text.toLowerCase(),
+                        icon: getWeatherIconFromCondition(current.condition.text)
+                    }],
+                    wind: {
+                        speed: current.wind_kph
+                    },
+                    clouds: {
+                        all: current.cloud
+                    },
+                    visibility: current.vis_km,
+                    rain: {
+                        '1h': current.precip_mm
+                    }
+                },
+                forecast: {
+                    list: generateForecastFromCurrent()
+                }
+            };
+        }
+
+        // Generate realistic demo weather data
+        function generateDemoWeatherData() {
+            const location = LOCATIONS[currentLocation];
+            const baseTemp = 18 + Math.random() * 12; // 18-30°C range for Nepal
+            const season = new Date().getMonth(); // 0-11
+            
+            // Adjust base temp by season
+            let seasonalAdjustment = 0;
+            if (season >= 3 && season <= 5) seasonalAdjustment = 3; // Spring
+            else if (season >= 6 && season <= 8) seasonalAdjustment = 5; // Summer/Monsoon
+            else if (season >= 9 && season <= 10) seasonalAdjustment = 2; // Autumn
+            else seasonalAdjustment = -2; // Winter
+            
+            const adjustedTemp = baseTemp + seasonalAdjustment;
+            
+            weatherData = {
+                current: {
+                    name: location.name.split(',')[0],
+                    main: {
+                        temp: adjustedTemp,
+                        feels_like: adjustedTemp + 2,
+                        humidity: 60 + Math.random() * 30,
+                        pressure: 1010 + Math.random() * 10
+                    },
+                    weather: [{
+                        description: getRandomWeatherCondition(season),
+                        icon: getRandomWeatherIcon(season)
+                    }],
+                    wind: {
+                        speed: 5 + Math.random() * 15
+                    },
+                    clouds: {
+                        all: Math.floor(Math.random() * 100)
+                    },
+                    visibility: 5000 + Math.random() * 5000,
+                    rain: Math.random() > 0.6 ? { '1h': Math.random() * 5 } : null
+                },
+                forecast: {
+                    list: Array.from({length: 7}, (_, i) => {
+                        const dayTemp = adjustedTemp + (Math.random() - 0.5) * 8;
+                        const maxTemp = dayTemp + Math.random() * 5;
+                        const minTemp = dayTemp - Math.random() * 5;
+                        
+                        return {
+                            dt: Date.now() / 1000 + (i * 24 * 3600),
+                            main: {
+                                temp: dayTemp,
+                                temp_max: maxTemp,
+                                temp_min: minTemp
+                            },
+                            weather: [{
+                                description: getRandomWeatherCondition(season),
+                                icon: getRandomWeatherIcon(season)
+                            }],
+                            rain: Math.random() > 0.7 ? { '1h': Math.random() * 3 } : null
+                        };
+                    })
+                }
+            };
+        }
+
+        // Get random weather condition based on season
+        function getRandomWeatherCondition(season) {
+            const conditions = {
+                // Spring (Mar-May)
+                2: ['partly cloudy', 'clear sky', 'light rain', 'scattered clouds'],
+                // Summer/Monsoon (Jun-Aug)
+                5: ['heavy rain', 'thunderstorm', 'rain', 'overcast', 'light rain'],
+                // Autumn (Sep-Oct)
+                8: ['partly cloudy', 'clear sky', 'scattered clouds', 'light rain'],
+                // Winter (Nov-Feb)
+                11: ['clear sky', 'partly cloudy', 'fog', 'scattered clouds']
+            };
+            
+            const seasonConditions = conditions[season] || conditions[2];
+            return seasonConditions[Math.floor(Math.random() * seasonConditions.length)];
+        }
+
+        // Get random weather icon
+        function getRandomWeatherIcon(season) {
+            const icons = {
+                2: ['☀️', '⛅', '🌧️', '☁️'],
+                5: ['🌧️', '⛈️', '☁️', '🌧️'],
+                8: ['☀️', '⛅', '☁️', '🌧️'],
+                11: ['☀️', '⛅', '🌫️', '☁️']
+            };
+            
+            const seasonIcons = icons[season] || icons[2];
+            return seasonIcons[Math.floor(Math.random() * seasonIcons.length)];
+        }
+
+        // Get weather description from code
+        function getWeatherDescription(code) {
+            const descriptions = {
+                0: 'clear sky', 1: 'mainly clear', 2: 'partly cloudy', 3: 'overcast',
+                45: 'fog', 48: 'fog', 51: 'drizzle', 53: 'drizzle',
+                55: 'drizzle', 56: 'freezing drizzle', 57: 'freezing drizzle', 61: 'rain',
+                63: 'rain', 65: 'rain', 66: 'rain', 67: 'freezing rain',
+                71: 'snow', 73: 'snow', 75: 'snow', 77: 'snow',
+                80: 'showers', 81: 'showers', 82: 'showers', 85: 'thunderstorm',
+                86: 'thunderstorm', 95: 'thunderstorm', 96: 'thunderstorm', 99: 'thunderstorm'
+            };
+            return descriptions[code] || 'partly cloudy';
+        }
+
+        // Get weather icon from condition
+        function getWeatherIconFromCondition(condition) {
+            const conditionLower = condition.toLowerCase();
+            if (conditionLower.includes('clear')) return '☀️';
+            if (conditionLower.includes('cloud')) return '☁️';
+            if (conditionLower.includes('rain')) return '🌧️';
+            if (conditionLower.includes('thunder')) return '⛈️';
+            if (conditionLower.includes('snow')) return '❄️';
+            if (conditionLower.includes('fog')) return '🌫️';
+            return '⛅';
+        }
+
+        // Change location
+        function changeLocation() {
+            const selector = document.getElementById('locationSelector');
+            const coords = selector.value.split(',');
+            
+            for (const [name, data] of Object.entries(LOCATIONS)) {
+                if (data.lat.toString() === coords[0] && data.lon.toString() === coords[1]) {
+                    currentLocation = name;
+                    localStorage.setItem('selectedLocation', name);
+                    break;
+                }
+            }
+            
+            if (useDemoData) {
+                generateDemoWeatherData();
+                updateWeatherDisplay();
+            } else {
+                tryFetchRealData();
+            }
+        }
+
+        // Update weather display with fetched data
+        function updateWeatherDisplay() {
+            if (!weatherData) return;
+            
+            const { current, forecast } = weatherData;
+            
+            // Update current weather
+            document.getElementById('weatherIcon').textContent = weatherIcons[current.weather[0].icon] || '🌤️';
+            document.getElementById('temperature').textContent = `${Math.round(current.main.temp)}°C`;
+            document.getElementById('weatherDesc').textContent = current.weather[0].description;
+            document.getElementById('location').textContent = LOCATIONS[currentLocation].name;
+            document.getElementById('coordinates').textContent = `Lat: ${LOCATIONS[currentLocation].lat}, Lon: ${LOCATIONS[currentLocation].lon}`;
+            document.getElementById('lastUpdated').textContent = 
+                `${translations[currentLang].lastUpdated}${new Date().toLocaleTimeString()}`;
+            
+            // Update weather details
+            document.getElementById('humidity').textContent = `${Math.round(current.main.humidity)}%`;
+            document.getElementById('windSpeed').textContent = `${current.wind.speed.toFixed(1)} km/h`;
+            document.getElementById('rainfall').textContent = 
+                current.rain && current.rain['1h'] ? `${current.rain['1h'].toFixed(1)} mm` : '0 mm';
+            document.getElementById('feelsLike').textContent = `${Math.round(current.main.feels_like)}°C`;
+            document.getElementById('cloudCover').textContent = `${current.clouds.all}%`;
+            document.getElementById('visibility').textContent = `${(current.visibility / 1000).toFixed(1)} km`;
+            
+            // Update forecast
+            updateForecast(forecast);
+            
+            // Update agricultural alerts based on weather
+            updateAgriculturalAlerts(current);
+        }
+
+        // Update 7-day forecast
+        function updateForecast(forecast) {
+            const forecastGrid = document.getElementById('forecastGrid');
+            forecastGrid.innerHTML = '';
+            
+            const days = currentLang === 'en' ? 
+                ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] :
+                ['आइतबार', 'सोमबार', 'मंगलबार', 'बुधबार', 'बिहीबार', 'शुक्रबार', 'शनिबार'];
+            
+            // Create forecast cards for next 7 days
+            const today = new Date().getDay();
+            for (let i = 0; i < 7; i++) {
+                const dayIndex = (today + i) % 7;
+                const dayName = days[dayIndex];
+                const dayData = forecast.list[i];
+                
+                if (dayData) {
+                    const maxTemp = Math.round(dayData.main.temp_max || dayData.main.temp + 3);
+                    const minTemp = Math.round(dayData.main.temp_min || dayData.main.temp - 3);
+                    
+                    const forecastCard = document.createElement('div');
+                    forecastCard.className = 'forecast-card';
+                    forecastCard.innerHTML = `
+                        <div class="forecast-day">${dayName}</div>
+                        <div class="forecast-icon">${weatherIcons[dayData.weather[0].icon] || '🌤️'}</div>
+                        <div class="forecast-temp">${maxTemp}°/${minTemp}°</div>
+                    `;
+                    forecastGrid.appendChild(forecastCard);
+                }
+            }
+        }
+
+        // Update agricultural alerts based on current weather
+        function updateAgriculturalAlerts(current) {
+            const alertsContainer = document.getElementById('alertsContainer');
+            const alerts = [];
+            
+            // Temperature-based alerts
+            if (current.main.temp > 30) {
+                alerts.push({
+                    icon: '🌡️',
+                    title: currentLang === 'en' ? 'High Temperature Warning' : 'उच्च तापक्रम चेतावनी',
+                    desc: currentLang === 'en' ? 
+                        `Temperature is ${Math.round(current.main.temp)}°C. Provide shade and extra water to livestock.` :
+                        `तापक्रम ${Math.round(current.main.temp)}°C छ। पशुओंलाई छाया र अतिरिक्त पानी प्रदान गर्नुहोस्।`,
+                    time: 'Just now'
+                });
+            }
+            
+            // Rain-based alerts
+            if (current.rain && current.rain['1h'] > 2) {
+                alerts.push({
+                    icon: '🌧️',
+                    title: currentLang === 'en' ? 'Heavy Rainfall Alert' : 'भारी वर्षा चेतावनी',
+                    desc: currentLang === 'en' ? 
+                        `Heavy rainfall detected. Postpone pesticide application for 24 hours.` :
+                        `भारी वर्षा पत्ता लाग्यो। कीटनाशक औषधि २४ घण्टाको लागि स्थगित गर्नुहोस्।`,
+                    time: 'Just now'
+                });
+            }
+            
+            // Wind-based alerts
+            if (current.wind.speed > 15) {
+                alerts.push({
+                    icon: '💨',
+                    title: currentLang === 'en' ? 'Strong Wind Warning' : 'बलियो हावा चेतावनी',
+                    desc: currentLang === 'en' ? 
+                        `Wind speed is ${current.wind.speed.toFixed(1)} km/h. Secure greenhouse structures.` :
+                        `हावाको गति ${current.wind.speed.toFixed(1)} किमी/घण्टा छ। ग्रीनहाउस संरचना सुरक्षित गर्नुहोस्।`,
+                    time: 'Just now'
+                });
+            }
+            
+            // Humidity-based alerts
+            if (current.main.humidity > 80) {
+                alerts.push({
+                    icon: '💧',
+                    title: currentLang === 'en' ? 'High Humidity Alert' : 'उच्च आर्द्रता चेतावनी',
+                    desc: currentLang === 'en' ? 
+                        `Humidity is ${Math.round(current.main.humidity)}%. Monitor for fungal diseases.` :
+                        `आर्द्रता ${Math.round(current.main.humidity)}% छ। फंगल रोगहरूको लागि निगरानी गर्नुहोस्।`,
+                    time: 'Just now'
+                });
+            }
+            
+            // If no dynamic alerts, show default alerts
+            if (alerts.length === 0) {
+                alerts.push(
+                    {
+                        icon: '⚠️',
+                        title: translations[currentLang].alert1Title,
+                        desc: translations[currentLang].alert1Desc,
+                        time: '2 hours ago'
+                    },
+                    {
+                        icon: '🌡️',
+                        title: translations[currentLang].alert2Title,
+                        desc: translations[currentLang].alert2Desc,
+                        time: '5 hours ago'
+                    },
+                    {
+                        icon: '💨',
+                        title: translations[currentLang].alert3Title,
+                        desc: translations[currentLang].alert3Desc,
+                        time: '1 day ago'
+                    }
+                );
+            }
+            
+            // Update alerts display
+            alertsContainer.innerHTML = alerts.map(alert => `
+                <div class="alert-card">
+                    <div class="alert-icon">${alert.icon}</div>
+                    <div class="alert-content">
+                        <h4>${alert.title}</h4>
+                        <p>${alert.desc}</p>
+                        <div class="alert-time">${alert.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update API status
+        function updateAPIStatus(status) {
+            const apiStatus = document.getElementById('apiStatus');
+            if (status === 'online') {
+                apiStatus.textContent = translations[currentLang].apiOnline;
+                apiStatus.className = 'api-status online';
+            } else if (status === 'offline') {
+                apiStatus.textContent = translations[currentLang].apiOffline;
+                apiStatus.className = 'api-status offline';
+            } else {
+                apiStatus.textContent = translations[currentLang].apiDemo;
+                apiStatus.className = 'api-status demo';
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'error' ? '#f8d7da' : type === 'success' ? '#d4edda' : '#fff3cd'};
+                color: ${type === 'error' ? '#721c24' : type === 'success' ? '#155724' : '#856404'};
+                padding: 1rem;
+                border-radius: 5px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                z-index: 10000;
+                max-width: 300px;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
+
+        // Refresh weather data
+        function refreshWeather() {
+            const refreshBtn = document.getElementById('refreshBtn');
+            refreshBtn.classList.add('loading');
+            
+            setTimeout(() => {
+                if (useDemoData) {
+                    generateDemoWeatherData();
+                } else {
+                    tryFetchRealData();
+                }
+                updateWeatherDisplay();
+                refreshBtn.classList.remove('loading');
+            }, 1000);
+        }
+
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Theme toggle function
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme');
+            
+            const themeBtn = document.getElementById('themeToggle');
+            if (isDarkTheme) {
+                themeBtn.textContent = translations[currentLang].themeLight;
+            } else {
+                themeBtn.textContent = translations[currentLang].themeDark;
+            }
+            
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        }
+
+        // Language toggle function
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ne' : 'en';
+            updateLanguage();
+            localStorage.setItem('language', currentLang);
+            
+            // Refresh weather data with new language
+            if (weatherData) {
+                updateWeatherDisplay();
+            }
+        }
+
+        function updateLanguage() {
+            const trans = translations[currentLang];
+            
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                const text = currentLang === 'en' ? link.getAttribute('data-en') : link.getAttribute('data-ne');
+                if (text) link.textContent = text;
+            });
+            
+            document.getElementById('logoText').textContent = trans.logoText;
+            document.getElementById('detailsTitle').textContent = trans.detailsTitle;
+            document.getElementById('humidityTitle').textContent = trans.humidityTitle;
+            document.getElementById('windTitle').textContent = trans.windTitle;
+            document.getElementById('rainTitle').textContent = trans.rainTitle;
+            document.getElementById('feelsTitle').textContent = trans.feelsTitle;
+            document.getElementById('cloudTitle').textContent = trans.cloudTitle;
+            document.getElementById('visibilityTitle').textContent = trans.visibilityTitle;
+            document.getElementById('forecastTitle').textContent = trans.forecastTitle;
+            document.getElementById('alertsTitle').textContent = trans.alertsTitle;
+            document.getElementById('location').textContent = LOCATIONS[currentLocation].name;
+            
+            document.getElementById('langToggle').textContent = trans.langBtn;
+            document.getElementById('themeToggle').textContent = isDarkTheme ? trans.themeLight : trans.themeDark;
+            
+            // Update API status
+            if (useDemoData) {
+                updateAPIStatus('demo');
+            }
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

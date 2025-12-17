@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - AgriSense</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Dark Theme */
+        body.dark-theme {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme nav {
+            background: linear-gradient(135deg, #1a2e10 0%, #2d4a1f 100%);
+        }
+
+        body.dark-theme .analytics-header {
+            background: linear-gradient(135deg, #2d4a1f 0%, #3d5f2a 100%);
+        }
+
+        body.dark-theme .stats-section {
+            background: #242424;
+        }
+
+        body.dark-theme .stat-card {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .charts-section {
+            background: #1a1a1a;
+        }
+
+        body.dark-theme .chart-card {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .reports-section {
+            background: #242424;
+        }
+
+        body.dark-theme .report-card {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme footer {
+            background: #1a2e10;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle, .lang-toggle {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle:hover, .lang-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #a8d08d;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Analytics Header */
+        .analytics-header {
+            background: linear-gradient(135deg, #4a7c2c 0%, #6b9d47 100%);
+            color: #fff;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .analytics-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .analytics-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 3rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #2d5016;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4a7c2c, #6b9d47, #8fbf6f);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4a7c2c;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #4a7c2c, #6b9d47);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        .stat-change {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .change-positive {
+            color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .change-negative {
+            color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        /* Charts Section */
+        .charts-section {
+            padding: 3rem 2rem;
+            background: #fff;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .chart-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .chart-card h3 {
+            color: #2d5016;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            margin-bottom: 1rem;
+        }
+
+        /* Animated Bar Chart */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 200px;
+            margin-top: 1rem;
+            gap: 0.5rem;
+        }
+
+        .bar {
+            width: 40px;
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            transition: transform 0.3s;
+            animation: growBar 1s ease-out forwards;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        @keyframes growBar {
+            from { height: 0; }
+        }
+
+        .bar:hover {
+            transform: scaleY(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            color: #2d5016;
+            font-weight: 600;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #fff;
+            background: rgba(0,0,0,0.7);
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        /* Animated Pie Chart */
+        .pie-chart-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 250px;
+            position: relative;
+        }
+
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #FF6B6B 0deg 72deg,
+                #4ECDC4 72deg 144deg,
+                #45B7D1 144deg 216deg,
+                #96CEB4 216deg 288deg,
+                #FECA57 288deg 360deg
+            );
+            position: relative;
+            animation: rotateIn 1s ease-out;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        @keyframes rotateIn {
+            from { transform: rotate(-90deg); opacity: 0; }
+            to { transform: rotate(0deg); opacity: 1; }
+        }
+
+        .pie-chart::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            background: #f8f9fa;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .pie-legend {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .legend-item:hover {
+            background: rgba(0,0,0,0.05);
+            transform: scale(1.05);
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Line Chart */
+        .line-chart {
+            position: relative;
+            height: 200px;
+            margin-top: 1rem;
+        }
+
+        .line-chart svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .line-path {
+            fill: none;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            animation: drawLine 2s ease-out forwards;
+        }
+
+        @keyframes drawLine {
+            from { stroke-dasharray: 1000; stroke-dashoffset: 1000; }
+            to { stroke-dasharray: 1000; stroke-dashoffset: 0; }
+        }
+
+        .line-point {
+            stroke: #fff;
+            stroke-width: 2;
+            animation: popIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes popIn {
+            to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; transform: scale(0); }
+        }
+
+        /* Reports Section */
+        .reports-section {
+            padding: 3rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .report-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            border-left: 4px solid #4a7c2c;
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .report-title {
+            color: #2d5016;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .report-date {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .report-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .metric:hover {
+            background: linear-gradient(135deg, #4a7c2c, #6b9d47);
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .metric-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #4a7c2c;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric:hover .metric-value {
+            color: #fff;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .metric:hover .metric-label {
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Progress Bars */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            animation: fillProgress 1.5s ease-out forwards;
+            transform-origin: left;
+        }
+
+        @keyframes fillProgress {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        /* Footer */
+        footer {
+            background: #2d5016;
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: #2d5016;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                padding: 2rem 0;
+                gap: 1rem;
+            }
+
+            body.dark-theme .nav-menu {
+                background: #1a2e10;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .analytics-title {
+                font-size: 2rem;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bar {
+                width: 30px;
+            }
+
+            .pie-chart {
+                width: 150px;
+                height: 150px;
+            }
+
+            .pie-chart::before {
+                width: 75px;
+                height: 75px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">🌾 <span id="logoText">AgriSense</span></a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="weather.html" data-en="Weather" data-ne="मौसम">Weather</a></li>
+                <li><a href="market.html" data-en="Market" data-ne="बजार">Market</a></li>
+                <li><a href="analytics.html" class="active" data-en="Analytics" data-ne="विश्लेषण">Analytics</a></li>
+                <li><a href="index.html#policies" data-en="Policies" data-ne="नीतिहरू">Policies</a></li>
+                <li><a href="login.html" class="login-btn" data-en="Login" data-ne="लगइन">Login</a></li>
+            </ul>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙 Dark</button>
+                <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">🇳🇵 नेपाली</button>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Analytics Header -->
+    <section class="analytics-header">
+        <h1 class="analytics-title" id="analyticsTitle">Farm Analytics Dashboard</h1>
+        <p class="analytics-subtitle" id="analyticsDesc">Comprehensive insights and data-driven analytics for optimal Nepali farm management</p>
+    </section>
+
+    <!-- Key Statistics -->
+    <section class="stats-section">
+        <div class="container">
+            <h2 class="section-title" id="statsTitle">Key Performance Indicators</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value">87%</div>
+                    <div class="stat-label" id="stat1Label">Crop Yield Rate</div>
+                    <div class="stat-change change-positive">↑ 12% from last month</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 87%; background: linear-gradient(90deg, #28a745, #20c997);"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value">रू 85K</div>
+                    <div class="stat-label" id="stat2Label">Monthly Revenue</div>
+                    <div class="stat-change change-positive">↑ 8% from last month</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 85%; background: linear-gradient(90deg, #007bff, #6610f2);"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🌱</div>
+                    <div class="stat-value">15</div>
+                    <div class="stat-label" id="stat3Label">Active Crops</div>
+                    <div class="stat-change change-positive">↑ 3 new this season</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%; background: linear-gradient(90deg, #17a2b8, #138496);"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💧</div>
+                    <div class="stat-value">72%</div>
+                    <div class="stat-label" id="stat4Label">Water Efficiency</div>
+                    <div class="stat-change change-negative">↓ 2% from last month</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 72%; background: linear-gradient(90deg, #ffc107, #ff6f00);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Section -->
+    <section class="charts-section">
+        <div class="container">
+            <h2 class="section-title" id="chartsTitle">Visual Analytics</h2>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3 id="chart1Title">Monthly Production</h3>
+                    <div class="chart-container">
+                        <div class="bar-chart">
+                            <div class="bar" style="height: 60%; background: linear-gradient(to top, #FF6B6B, #FF8E53);">
+                                <span class="bar-value">45T</span>
+                                <span class="bar-label" id="month1">Baishakh</span>
+                            </div>
+                            <div class="bar" style="height: 75%; background: linear-gradient(to top, #4ECDC4, #44A08D);">
+                                <span class="bar-value">58T</span>
+                                <span class="bar-label" id="month2">Jestha</span>
+                            </div>
+                            <div class="bar" style="height: 85%; background: linear-gradient(to top, #45B7D1, #2196F3);">
+                                <span class="bar-value">62T</span>
+                                <span class="bar-label" id="month3">Ashadh</span>
+                            </div>
+                            <div class="bar" style="height: 70%; background: linear-gradient(to top, #96CEB4, #27AE60);">
+                                <span class="bar-value">52T</span>
+                                <span class="bar-label" id="month4">Shrawan</span>
+                            </div>
+                            <div class="bar" style="height: 90%; background: linear-gradient(to top, #FECA57, #F39C12);">
+                                <span class="bar-value">68T</span>
+                                <span class="bar-label" id="month5">Bhadra</span>
+                            </div>
+                            <div class="bar" style="height: 95%; background: linear-gradient(to top, #9B59B6, #8E44AD);">
+                                <span class="bar-value">71T</span>
+                                <span class="bar-label" id="month6">Ashwin</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 id="chart2Title">Crop Distribution</h3>
+                    <div class="chart-container">
+                        <div class="pie-chart-container">
+                            <div class="pie-chart"></div>
+                        </div>
+                    </div>
+                    <div class="pie-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #FF6B6B;"></div>
+                            <span id="cropType1">Rice (20%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #4ECDC4;"></div>
+                            <span id="cropType2">Maize (20%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #45B7D1;"></div>
+                            <span id="cropType3">Wheat (20%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #96CEB4;"></div>
+                            <span id="cropType4">Vegetables (20%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #FECA57;"></div>
+                            <span id="cropType5">Others (20%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 id="chart3Title">Revenue Trends</h3>
+                    <div class="chart-container">
+                        <div class="line-chart">
+                            <svg viewBox="0 0 400 200">
+                                <defs>
+                                    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:1" />
+                                        <stop offset="25%" style="stop-color:#4ECDC4;stop-opacity:1" />
+                                        <stop offset="50%" style="stop-color:#45B7D1;stop-opacity:1" />
+                                        <stop offset="75%" style="stop-color:#96CEB4;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#FECA57;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <path class="line-path" d="M 20 180 Q 100 120, 200 100 T 380 40" stroke="url(#lineGradient)"/>
+                                <circle class="line-point" cx="20" cy="180" r="5" fill="#FF6B6B" style="animation-delay: 0.1s"/>
+                                <circle class="line-point" cx="100" cy="120" r="5" fill="#4ECDC4" style="animation-delay: 0.3s"/>
+                                <circle class="line-point" cx="200" cy="100" r="5" fill="#45B7D1" style="animation-delay: 0.5s"/>
+                                <circle class="line-point" cx="300" cy="70" r="5" fill="#96CEB4" style="animation-delay: 0.7s"/>
+                                <circle class="line-point" cx="380" cy="40" r="5" fill="#FECA57" style="animation-delay: 0.9s"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 id="chart4Title">Resource Usage</h3>
+                    <div class="chart-container">
+                        <div class="bar-chart">
+                            <div class="bar" style="height: 80%; background: linear-gradient(to top, #3498db, #2980b9);">
+                                <span class="bar-value">80%</span>
+                                <span class="bar-label" id="resource1">Water</span>
+                            </div>
+                            <div class="bar" style="height: 65%; background: linear-gradient(to top, #e74c3c, #c0392b);">
+                                <span class="bar-value">65%</span>
+                                <span class="bar-label" id="resource2">Fertilizer</span>
+                            </div>
+                            <div class="bar" style="height: 45%; background: linear-gradient(to top, #f39c12, #e67e22);">
+                                <span class="bar-value">45%</span>
+                                <span class="bar-label" id="resource3">Pesticides</span>
+                            </div>
+                            <div class="bar" style="height: 70%; background: linear-gradient(to top, #27ae60, #229954);">
+                                <span class="bar-value">70%</span>
+                                <span class="bar-label" id="resource4">Seeds</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reports Section -->
+    <section class="reports-section">
+        <div class="container">
+            <h2 class="section-title" id="reportsTitle">Recent Reports</h2>
+            <div class="reports-grid">
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3 class="report-title" id="report1Title">Q2 Performance Report</h3>
+                        <span class="report-date">Ashwin 30, 2024</span>
+                    </div>
+                    <p id="report1Desc">Comprehensive analysis of Q2 performance showing significant growth in yield and revenue.</p>
+                    <div class="report-metrics">
+                        <div class="metric">
+                            <div class="metric-value">+18%</div>
+                            <div class="metric-label" id="metric1Label">Yield Growth</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">+22%</div>
+                            <div class="metric-label" id="metric2Label">Revenue Growth</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">87%</div>
+                            <div class="metric-label" id="metric3Label">Efficiency</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">4.5</div>
+                            <div class="metric-label" id="metric4Label">Crop Rating</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3 class="report-title" id="report2Title">Soil Health Analysis</h3>
+                        <span class="report-date">Ashwin 15, 2024</span>
+                    </div>
+                    <p id="report2Desc">Detailed soil analysis with recommendations for nutrient management and crop rotation.</p>
+                    <div class="report-metrics">
+                        <div class="metric">
+                            <div class="metric-value">6.8</div>
+                            <div class="metric-label" id="metric5Label">pH Level</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">Good</div>
+                            <div class="metric-label" id="metric6Label">Organic Matter</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">High</div>
+                            <div class="metric-label" id="metric7Label">Nitrogen</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">Medium</div>
+                            <div class="metric-label" id="metric8Label">Phosphorus</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3 class="report-title" id="report3Title">Irrigation Efficiency</h3>
+                        <span class="report-date">Ashwin 1, 2024</span>
+                    </div>
+                    <p id="report3Desc">Water usage analysis with optimization suggestions for better irrigation management.</p>
+                    <div class="report-metrics">
+                        <div class="metric">
+                            <div class="metric-value">72%</div>
+                            <div class="metric-label" id="metric9Label">Efficiency</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">-15%</div>
+                            <div class="metric-label" id="metric10Label">Water Saved</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">2.5L</div>
+                            <div class="metric-label" id="metric11Label">Daily Usage</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">Good</div>
+                            <div class="metric-label" id="metric12Label">Soil Moisture</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                    <h3 class="report-title" id="report4Title">Market Analysis</h3>
+                        <span class="report-date">Bhadra 20, 2024</span>
+                    </div>
+                    <p id="report4Desc">Market trend analysis with price predictions and selling recommendations.</p>
+                    <div class="report-metrics">
+                        <div class="metric">
+                            <div class="metric-value">रू 2,450</div>
+                            <div class="metric-label" id="metric13Label">Avg Rice Price</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">+12%</div>
+                            <div class="metric-label" id="metric14Label">Price Trend</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">High</div>
+                            <div class="metric-label" id="metric15Label">Demand</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">Best</div>
+                            <div class="metric-label" id="metric16Label">Time to Sell</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 AgriSense. All rights reserved. Empowering Nepali farmers with technology.</p>
+    </footer>
+
+    <script>
+        // Language translations
+        const translations = {
+            en: {
+                logoText: 'AgriSense',
+                analyticsTitle: 'Farm Analytics Dashboard',
+                analyticsDesc: 'Comprehensive insights and data-driven analytics for optimal Nepali farm management',
+                statsTitle: 'Key Performance Indicators',
+                chartsTitle: 'Visual Analytics',
+                reportsTitle: 'Recent Reports',
+                stat1Label: 'Crop Yield Rate',
+                stat2Label: 'Monthly Revenue',
+                stat3Label: 'Active Crops',
+                stat4Label: 'Water Efficiency',
+                chart1Title: 'Monthly Production',
+                chart2Title: 'Crop Distribution',
+                chart3Title: 'Revenue Trends',
+                chart4Title: 'Resource Usage',
+                month1: 'Baishakh',
+                month2: 'Jestha',
+                month3: 'Ashadh',
+                month4: 'Shrawan',
+                month5: 'Bhadra',
+                month6: 'Ashwin',
+                cropType1: 'Rice (20%)',
+                cropType2: 'Maize (20%)',
+                cropType3: 'Wheat (20%)',
+                cropType4: 'Vegetables (20%)',
+                cropType5: 'Others (20%)',
+                resource1: 'Water',
+                resource2: 'Fertilizer',
+                resource3: 'Pesticides',
+                resource4: 'Seeds',
+                report1Title: 'Q2 Performance Report',
+                report1Desc: 'Comprehensive analysis of Q2 performance showing significant growth in yield and revenue.',
+                report2Title: 'Soil Health Analysis',
+                report2Desc: 'Detailed soil analysis with recommendations for nutrient management and crop rotation.',
+                report3Title: 'Irrigation Efficiency',
+                report3Desc: 'Water usage analysis with optimization suggestions for better irrigation management.',
+                report4Title: 'Market Analysis',
+                report4Desc: 'Market trend analysis with price predictions and selling recommendations.',
+                metric1Label: 'Yield Growth',
+                metric2Label: 'Revenue Growth',
+                metric3Label: 'Efficiency',
+                metric4Label: 'Crop Rating',
+                metric5Label: 'pH Level',
+                metric6Label: 'Organic Matter',
+                metric7Label: 'Nitrogen',
+                metric8Label: 'Phosphorus',
+                metric9Label: 'Efficiency',
+                metric10Label: 'Water Saved',
+                metric11Label: 'Daily Usage',
+                metric12Label: 'Soil Moisture',
+                metric13Label: 'Avg Rice Price',
+                metric14Label: 'Price Trend',
+                metric15Label: 'Demand',
+                metric16Label: 'Time to Sell',
+                themeLight: '☀️ Light',
+                themeDark: '🌙 Dark',
+                langBtn: '🇳🇵 नेपाली'
+            },
+            ne: {
+                logoText: 'एग्रीसेन्स',
+                analyticsTitle: 'खेती विश्लेषण ड्यासबोर्ड',
+                analyticsDesc: 'अनुकूल नेपाली खेत प्रबन्धनको लागि व्यापक अन्तर्दृष्टि र डेटा-संचालित विश्लेषण',
+                statsTitle: 'मुख्य प्रदर्शन संकेतकहरू',
+                chartsTitle: 'दृश्य विश्लेषण',
+                reportsTitle: 'हालका प्रतिवेदनहरू',
+                stat1Label: 'बाली उपज दर',
+                stat2Label: 'मासिक आम्दानी',
+                stat3Label: 'सक्रिय बालीहरू',
+                stat4Label: 'पानी दक्षता',
+                chart1Title: 'मासिक उत्पादन',
+                chart2Title: 'बाली वितरण',
+                chart3Title: 'आम्दानी प्रवृत्ति',
+                chart4Title: 'स्रोत प्रयोग',
+                month1: 'बैशाख',
+                month2: 'जेष्ठ',
+                month3: 'असार',
+                month4: 'श्रावण',
+                month5: 'भाद्र',
+                month6: 'असोज',
+                cropType1: 'चामल (२०%)',
+                cropType2: 'मकै (२०%)',
+                cropType3: 'गहुँ (२०%)',
+                cropType4: 'तरकारी (२०%)',
+                cropType5: 'अन्य (२०%)',
+                resource1: 'पानी',
+                resource2: 'मल',
+                resource3: 'कीटनाशक',
+                resource4: 'बीउ',
+                report1Title: 'Q2 प्रदर्शन प्रतिवेदन',
+                report1Desc: 'उपज र आम्दानीमा महत्त्वपूर्ण वृद्धि देखाउने Q2 प्रदर्शनको व्यापक विश्लेषण।',
+                report2Title: 'माटो स्वास्थ्य विश्लेषण',
+                report2Desc: 'पोषक तत्व व्यवस्थापन र बाली रोटेशनको लागि सिफारिसहरूसहित विस्तृत माटो विश्लेषण।',
+                report3Title: 'सिँचाई दक्षता',
+                report3Desc: 'राम्रो सिँचाई व्यवस्थापनको लागि अनुकूलन सुझावहरूसहित पानी प्रयोग विश्लेषण।',
+                report4Title: 'बजार विश्लेषण',
+                report4Desc: 'मूल्य पूर्वानुमान र बिक्री सिफारिसहरूसहित बजार प्रवृत्ति विश्लेषण।',
+                metric1Label: 'उपज वृद्धि',
+                metric2Label: 'आम्दानी वृद्धि',
+                metric3Label: 'दक्षता',
+                metric4Label: 'बाली रेटिङ',
+                metric5Label: 'pH स्तर',
+                metric6Label: 'जैविक पदार्थ',
+                metric7Label: 'नाइट्रोजन',
+                metric8Label: 'फस्फोरस',
+                metric9Label: 'दक्षता',
+                metric10Label: 'पानी बचत',
+                metric11Label: 'दैनिक प्रयोग',
+                metric12Label: 'माटो ओस',
+                metric13Label: 'औसत चामल मूल्य',
+                metric14Label: 'मूल्य प्रवृत्ति',
+                metric15Label: 'माग',
+                metric16Label: 'बेच्ने समय',
+                themeLight: '☀️ उज्यालो',
+                themeDark: '🌙 अँध्यारो',
+                langBtn: '🇬🇧 English'
+            }
+        };
+
+        let currentLang = 'en';
+        let isDarkTheme = false;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPreferences();
+            animateOnScroll();
+        });
+
+        // Load saved preferences
+        function loadPreferences() {
+            const savedTheme = localStorage.getItem('theme');
+            const savedLang = localStorage.getItem('language');
+            
+            if (savedTheme === 'dark') {
+                toggleTheme();
+            }
+            
+            if (savedLang === 'ne') {
+                toggleLanguage();
+            }
+        }
+
+        // Animate elements on scroll
+        function animateOnScroll() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'none';
+                        entry.target.offsetHeight; // Trigger reflow
+                        entry.target.style.animation = '';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.stat-card, .chart-card, .report-card').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Theme toggle function
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme');
+            
+            const themeBtn = document.getElementById('themeToggle');
+            if (isDarkTheme) {
+                themeBtn.textContent = translations[currentLang].themeLight;
+            } else {
+                themeBtn.textContent = translations[currentLang].themeDark;
+            }
+            
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        }
+
+        // Language toggle function
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ne' : 'en';
+            updateLanguage();
+            localStorage.setItem('language', currentLang);
+        }
+
+        function updateLanguage() {
+            const trans = translations[currentLang];
+            
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                const text = currentLang === 'en' ? link.getAttribute('data-en') : link.getAttribute('data-ne');
+                if (text) link.textContent = text;
+            });
+            
+            document.getElementById('logoText').textContent = trans.logoText;
+            document.getElementById('analyticsTitle').textContent = trans.analyticsTitle;
+            document.getElementById('analyticsDesc').textContent = trans.analyticsDesc;
+            document.getElementById('statsTitle').textContent = trans.statsTitle;
+            document.getElementById('chartsTitle').textContent = trans.chartsTitle;
+            document.getElementById('reportsTitle').textContent = trans.reportsTitle;
+            document.getElementById('stat1Label').textContent = trans.stat1Label;
+            document.getElementById('stat2Label').textContent = trans.stat2Label;
+            document.getElementById('stat3Label').textContent = trans.stat3Label;
+            document.getElementById('stat4Label').textContent = trans.stat4Label;
+            document.getElementById('chart1Title').textContent = trans.chart1Title;
+            document.getElementById('chart2Title').textContent = trans.chart2Title;
+            document.getElementById('chart3Title').textContent = trans.chart3Title;
+            document.getElementById('chart4Title').textContent = trans.chart4Title;
+            document.getElementById('month1').textContent = trans.month1;
+            document.getElementById('month2').textContent = trans.month2;
+            document.getElementById('month3').textContent = trans.month3;
+            document.getElementById('month4').textContent = trans.month4;
+            document.getElementById('month5').textContent = trans.month5;
+            document.getElementById('month6').textContent = trans.month6;
+            document.getElementById('cropType1').textContent = trans.cropType1;
+            document.getElementById('cropType2').textContent = trans.cropType2;
+            document.getElementById('cropType3').textContent = trans.cropType3;
+            document.getElementById('cropType4').textContent = trans.cropType4;
+            document.getElementById('cropType5').textContent = trans.cropType5;
+            document.getElementById('resource1').textContent = trans.resource1;
+            document.getElementById('resource2').textContent = trans.resource2;
+            document.getElementById('resource3').textContent = trans.resource3;
+            document.getElementById('resource4').textContent = trans.resource4;
+            document.getElementById('report1Title').textContent = trans.report1Title;
+            document.getElementById('report1Desc').textContent = trans.report1Desc;
+            document.getElementById('report2Title').textContent = trans.report2Title;
+            document.getElementById('report2Desc').textContent = trans.report2Desc;
+            document.getElementById('report3Title').textContent = trans.report3Title;
+            document.getElementById('report3Desc').textContent = trans.report3Desc;
+            document.getElementById('report4Title').textContent = trans.report4Title;
+            document.getElementById('report4Desc').textContent = trans.report4Desc;
+            document.getElementById('metric1Label').textContent = trans.metric1Label;
+            document.getElementById('metric2Label').textContent = trans.metric2Label;
+            document.getElementById('metric3Label').textContent = trans.metric3Label;
+            document.getElementById('metric4Label').textContent = trans.metric4Label;
+            document.getElementById('metric5Label').textContent = trans.metric5Label;
+            document.getElementById('metric6Label').textContent = trans.metric6Label;
+            document.getElementById('metric7Label').textContent = trans.metric7Label;
+            document.getElementById('metric8Label').textContent = trans.metric8Label;
+            document.getElementById('metric9Label').textContent = trans.metric9Label;
+            document.getElementById('metric10Label').textContent = trans.metric10Label;
+            document.getElementById('metric11Label').textContent = trans.metric11Label;
+            document.getElementById('metric12Label').textContent = trans.metric12Label;
+            document.getElementById('metric13Label').textContent = trans.metric13Label;
+            document.getElementById('metric14Label').textContent = trans.metric14Label;
+            document.getElementById('metric15Label').textContent = trans.metric15Label;
+            document.getElementById('metric16Label').textContent = trans.metric16Label;
+            
+            document.getElementById('langToggle').textContent = trans.langBtn;
+            document.getElementById('themeToggle').textContent = isDarkTheme ? trans.themeLight : trans.themeDark;
+        }
+    </script>
+</body>
+</html>
