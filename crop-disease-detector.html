@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AgriSathi Crop Disease Detector</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; background: #f7f7f7; margin: 0; padding: 0; }
+    .container { max-width: 420px; margin: 24px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+    h2 { color: #2e7d32; margin-bottom: 8px; }
+    .lang-switch { float: right; }
+    label, .section-title { display: block; margin-top: 16px; font-weight: bold; }
+    select, input[type="file"], input[type="text"] { width: 100%; margin-top: 8px; }
+    button, .icon-btn { margin-top: 16px; background: #388e3c; color: #fff; border: none; padding: 12px; border-radius: 4px; cursor: pointer; }
+    .icon-btn { background: none; color: #388e3c; font-size: 24px; padding: 0 8px; }
+    #result { margin-top: 24px; font-weight: bold; color: #d32f2f; }
+    img { max-width: 100%; margin-top: 16px; border-radius: 4px; }
+    .weather, .calendar, .myfarm { margin-top: 16px; background: #e8f5e9; padding: 12px; border-radius: 4px; }
+    .audio-alert { color: #388e3c; font-size: 18px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="lang-switch">
+      <select id="lang">
+        <option value="en">English</option>
+        <option value="np">नेपाली</option>
+        <option value="gu">Gurung</option>
+        <option value="mg">Magar</option>
+      </select>
+    </div>
+    <h2 id="title">AgriSathi Crop Disease Detector</h2>
+    <div class="weather" id="weather"></div>
+    <div class="calendar" id="calendar"></div>
+    <label for="crop" id="cropLabel">Select Crop:</label>
+    <select id="crop">
+      <option value="tomato">🍅 Tomato</option>
+      <option value="potato">🥔 Potato</option>
+      <option value="rice">🌾 Rice</option>
+      <option value="spinach">🥬 Spinach</option>
+      <option value="cucumber">🥒 Cucumber</option>
+    </select>
+    <label for="imageUpload" id="imgLabel">Upload Crop Image:</label>
+    <input type="file" id="imageUpload" accept="image/*">
+    <img id="preview" src="#" alt="" style="display:none;">
+    <button id="predictBtn">Detect Disease</button>
+    <button class="icon-btn" id="voiceBtn" title="Voice Input">🎤</button>
+    <div id="result"></div>
+    <div class="audio-alert" id="audioAlert"></div>
+    <div class="myfarm">
+      <span class="section-title" id="myFarmTitle">My Farm</span>
+      <input type="text" id="farmName" placeholder="Farm Name">
+      <input type="text" id="farmCrop" placeholder="Current Crop">
+      <button id="saveFarmBtn">Save Farm</button>
+      <div id="farmStatus"></div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.18.0/dist/tf.min.js"></script>
+  <script>
+    // --- Multilingual UI ---
+    const translations = {
+      en: {
+        title: "AgriSathi Crop Disease Detector",
+        cropLabel: "Select Crop:",
+        imgLabel: "Upload Crop Image:",
+        predictBtn: "Detect Disease",
+        myFarmTitle: "My Farm",
+        saveFarmBtn: "Save Farm",
+        farmName: "Farm Name",
+        farmCrop: "Current Crop",
+        weather: "Weather: Sunny, 28°C",
+        calendar: "Indigenous Calendar: Shrawan 6, 2082",
+        audioHealthy: "Your crop looks healthy.",
+        audioDisease: "Disease detected! Please consult an expert.",
+      },
+      np: {
+        title: "अग्रिसाथी बाली रोग पहिचान",
+        cropLabel: "बाली छान्नुहोस्:",
+        imgLabel: "बालीको फोटो अपलोड गर्नुहोस्:",
+        predictBtn: "रोग पत्ता लगाउनुहोस्",
+        myFarmTitle: "मेरो फारम",
+        saveFarmBtn: "सेभ गर्नुहोस्",
+        farmName: "फारमको नाम",
+        farmCrop: "हालको बाली",
+        weather: "मौसम: घाम लाग्यो, २८°C",
+        calendar: "पारम्परिक पात्रो: श्रावण ६, २०८२",
+        audioHealthy: "तपाईंको बाली स्वस्थ छ।",
+        audioDisease: "रोग देखियो! कृपया विज्ञसँग सल्लाह गर्नुहोस्।",
+      },
+      gu: {
+        title: "AgriSathi Crop Disease Detector (Gurung)",
+        cropLabel: "Crop Cho:",
+        imgLabel: "Image Upload:",
+        predictBtn: "Disease Detect",
+        myFarmTitle: "My Farm",
+        saveFarmBtn: "Save Farm",
+        farmName: "Farm Name",
+        farmCrop: "Current Crop",
+        weather: "Weather: Sunny, 28°C",
+        calendar: "Indigenous Calendar: Shrawan 6, 2082",
+        audioHealthy: "Your crop looks healthy.",
+        audioDisease: "Disease detected! Please consult an expert.",
+      },
+      mg: {
+        title: "AgriSathi Crop Disease Detector (Magar)",
+        cropLabel: "Crop Chunu:",
+        imgLabel: "Image Upload:",
+        predictBtn: "Disease Detect",
+        myFarmTitle: "My Farm",
+        saveFarmBtn: "Save Farm",
+        farmName: "Farm Name",
+        farmCrop: "Current Crop",
+        weather: "Weather: Sunny, 28°C",
+        calendar: "Indigenous Calendar: Shrawan 6, 2082",
+        audioHealthy: "Your crop looks healthy.",
+        audioDisease: "Disease detected! Please consult an expert.",
+      }
+    };
+
+    function setLang(lang) {
+      document.getElementById('title').textContent = translations[lang].title;
+      document.getElementById('cropLabel').textContent = translations[lang].cropLabel;
+      document.getElementById('imgLabel').textContent = translations[lang].imgLabel;
+      document.getElementById('predictBtn').textContent = translations[lang].predictBtn;
+      document.getElementById('myFarmTitle').textContent = translations[lang].myFarmTitle;
+      document.getElementById('saveFarmBtn').textContent = translations[lang].saveFarmBtn;
+      document.getElementById('farmName').placeholder = translations[lang].farmName;
+      document.getElementById('farmCrop').placeholder = translations[lang].farmCrop;
+      document.getElementById('weather').textContent = translations[lang].weather;
+      document.getElementById('calendar').textContent = translations[lang].calendar;
+    }
+    document.getElementById('lang').addEventListener('change', e => setLang(e.target.value));
+    setLang('en');
+
+    // --- Farmer Lifecycle Tracking ("My Farm") ---
+    function loadFarm() {
+      const farm = JSON.parse(localStorage.getItem('myFarm') || '{}');
+      if (farm.name) document.getElementById('farmName').value = farm.name;
+      if (farm.crop) document.getElementById('farmCrop').value = farm.crop;
+      if (farm.name && farm.crop) {
+        document.getElementById('farmStatus').textContent = `Farm: ${farm.name}, Crop: ${farm.crop}`;
+      }
+    }
+    document.getElementById('saveFarmBtn').onclick = function() {
+      const name = document.getElementById('farmName').value;
+      const crop = document.getElementById('farmCrop').value;
+      localStorage.setItem('myFarm', JSON.stringify({ name, crop }));
+      document.getElementById('farmStatus').textContent = `Farm: ${name}, Crop: ${crop}`;
+    };
+    loadFarm();
+
+    // --- Image Preview ---
+    let imageElement = document.getElementById('preview');
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          imageElement.src = ev.target.result;
+          imageElement.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // --- Disease Detection (TensorFlow.js) ---
+    const cropModels = {
+      tomato: 'models/tomato/model.json',
+      potato: 'models/potato/model.json',
+      rice: 'models/rice/model.json',
+      spinach: 'models/spinach/model.json',
+      cucumber: 'models/cucumber/model.json'
+    };
+    let selectedModel = null;
+
+    // --- PlantNet API Integration ---
+    async function identifyPlantWithPlantNet(imageFile, lang, latitude, longitude) {
+      const formData = new FormData();
+      formData.append("image", imageFile);
+
+      const response = await fetch(`http://127.0.0.1:5000/identify?latitude=${latitude}&longitude=${longitude}`, {
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) throw new Error("PlantNet API error");
+      return await response.json();
+    }
+
+    // --- Modified Predict Button Handler ---
+    document.getElementById('predictBtn').addEventListener('click', async function() {
+      const crop = document.getElementById('crop').value;
+      const lang = document.getElementById('lang').value;
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = translations[lang].predictBtn + '...';
+
+      const imageInput = document.getElementById('imageUpload');
+      if (imageInput.files.length === 0) {
+        resultDiv.textContent = "Please upload an image.";
+        return;
+      }
+
+      // Get user's location
+      if (!navigator.geolocation) {
+        resultDiv.textContent = "Geolocation is not supported by your browser.";
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        try {
+          const plantNetResult = await identifyPlantWithPlantNet(imageInput.files[0], lang, latitude, longitude);
+          let plantIdentified = false;
+          let bestMatch = null;
+          let species = "";
+          let commonNames = "";
+          if (plantNetResult.results && plantNetResult.results.length > 0) {
+            bestMatch = plantNetResult.results[0];
+            species = bestMatch.species.scientificName.toLowerCase();
+            commonNames = bestMatch.species.commonNames.map(n => n.toLowerCase()).join(", ");
+            // Check if PlantNet result matches selected crop
+            if (
+              species.includes(crop) ||
+              commonNames.includes(crop)
+            ) {
+              plantIdentified = true;
+            }
+            resultDiv.textContent = `PlantNet: ${species} (${commonNames})`;
+            document.getElementById('audioAlert').textContent = `Identified as: ${commonNames}`;
+            if ('speechSynthesis' in window) {
+              const utter = new SpeechSynthesisUtterance(`Identified as: ${commonNames}`);
+              utter.lang = lang === 'np' ? 'ne-NP' : 'en-US';
+              window.speechSynthesis.speak(utter);
+            }
+          } else {
+            resultDiv.textContent = "No match found.";
+            document.getElementById('audioAlert').textContent = "";
+            return;
+          }
+
+          // If crop matches, run disease detection
+          if (plantIdentified && imageElement.src && imageElement.style.display !== "none") {
+            // Load TensorFlow.js model for selected crop
+            if (!selectedModel || selectedModel.crop !== crop) {
+              selectedModel = {
+                crop,
+                model: await tf.loadLayersModel(cropModels[crop])
+              };
+            }
+            // Preprocess image
+            const img = tf.browser.fromPixels(imageElement).resizeNearestNeighbor([224, 224]).toFloat().expandDims();
+            // Predict
+            const prediction = await selectedModel.model.predict(img).data();
+            const classes = ['Healthy', 'Disease A', 'Disease B', 'Disease C']; // Replace with actual classes
+            const maxIdx = prediction.indexOf(Math.max(...prediction));
+            const diseaseResult = `${translations[lang].predictBtn}: ${classes[maxIdx]}`;
+            resultDiv.textContent += `\n${diseaseResult}`;
+            // Audio/Visual Alert
+            const audioMsg = maxIdx === 0 ? translations[lang].audioHealthy : translations[lang].audioDisease;
+            document.getElementById('audioAlert').textContent += `\n${audioMsg}`;
+            if ('speechSynthesis' in window) {
+              const utter = new SpeechSynthesisUtterance(audioMsg);
+              utter.lang = lang === 'np' ? 'ne-NP' : 'en-US';
+              window.speechSynthesis.speak(utter);
+            }
+            img.dispose();
+          } else if (!plantIdentified) {
+            resultDiv.textContent += `\nSelected crop does not match image.`
+            document.getElementById('audioAlert').textContent += `\nPlease check your selection or image.`
+          }
+        } catch (err) {
+          resultDiv.textContent = "Error: " + err.message;
+          document.getElementById('audioAlert').textContent = "";
+        }
+      }, (error) => {
+        let errorText = "Could not get your location. ";
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorText += "You denied the request for Geolocation. Please enable location permissions for this site in your browser settings.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorText += "Location information is unavailable. Please ensure you have a network connection and that location services are enabled on your device.";
+            break;
+          case error.TIMEOUT:
+            errorText += "The request to get your location timed out.";
+            break;
+          case error.UNKNOWN_ERROR:
+            errorText += "An unknown error occurred while trying to get your location.";
+            break;
+        }
+        resultDiv.textContent = errorText + ` (Details: ${error.message})`;
+      });
+    });
+
+    // --- Voice Input (Web Speech API) ---
+    document.getElementById('voiceBtn').onclick = function() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert('Voice input not supported on this browser.');
+        return;
+      }
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = document.getElementById('lang').value === 'np' ? 'ne-NP' : 'en-US';
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('result').textContent = `Voice: ${transcript}`;
+        // Optionally: parse transcript for crop/disease queries
+      };
+      recognition.start();
+    };
+
+    // --- Weather & Calendar Integration (Mocked) ---
+    // Replace with real API calls for weather and indigenous calendar as needed
+
+    // --- Offline-first UX ---
+    window.addEventListener('offline', () => {
+      document.getElementById('weather').textContent += ' (Offline)';
+      document.getElementById('calendar').textContent += ' (Offline)';
+    });
+    window.addEventListener('online', () => setLang(document.getElementById('lang').value));
+  </script>
+</body>
+</html>
