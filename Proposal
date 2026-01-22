@@ -1,0 +1,184 @@
+
+***
+
+**GANDAKI UNIVERSITY**
+**BIT PROGRAM**
+**Gyankunja-32, Pokhara**
+
+# A Project Proposal on
+## “AgriSathi: AI-Powered Agricultural Intelligence for Gandaki Province”
+
+**Submitted By:**
+Aswin Panta
+Salina Kunwar
+Shadbhav Regmi
+
+**Submitted To:**
+BIT Program, 2025
+
+---
+
+### 1. Introduction
+
+**1.1 Background**
+Agriculture is the backbone of Nepal’s economy, employing a majority of the population. In Gandaki Province, however, the sector faces a critical junction between traditional practices and the urgent need for digital modernization. Currently, farmers grapple with devastating crop diseases (e.g., Late Blight, Bacterial Wilt), climate vulnerability, and limited market access. Simultaneously, governance bodies struggle with a lack of real-time data, often relying on outdated annual reports for policy-making. There is an urgent demand for a unified, smart system that bridges the gap between field-level realities and regional planning.
+
+**1.2 The Solution: AgriSathi**
+AgriSathi is proposed as a comprehensive AI-powered agricultural intelligence platform designed for Gandaki Province. It serves as a dual-interface system: a **Mobile Companion** for farmers and a **Web Dashboard** for government stakeholders. By integrating cutting-edge technology—such as on-device AI disease detection and real-time climate analytics—with indigenous wisdom, AgriSathi aims to create a seamless loop of data and action. It transforms field-level information into actionable insights for sustainable farming and evidence-based governance.
+
+### 2. Statement of Problem
+
+The agricultural ecosystem in Gandaki Province currently faces the following critical challenges:
+
+*   **Crop Health & Yield Loss:** Farmers suffer substantial economic losses due to the inability to diagnose crop diseases (like Rice Blast) early. The lack of immediate expert consultation leads to preventable yield reductions.
+*   **Digital Divide & Generic Advisories:** Existing systems provide generic advisories rather than location-specific recommendations. A digital divide exists where rural farmers lack access to complex data tools.
+*   **Climate Vulnerability:** There is an absence of localized early warning systems for floods, droughts, and frost, leaving farmers unprepared against climate variability.
+*   **Market Inefficiency:** Weak market linkages force farmers to depend on middlemen, reducing their profits. There is no mechanism for price prediction or cost-benefit analysis.
+*   **Governance Gaps:** Policymakers lack a centralized system to track live crop patterns or yield trends, resulting in delayed interventions and subsidy distribution based on assumptions rather than evidence.
+
+### 3. Objectives
+
+**3.1 General Objective**
+To develop a smart agricultural intelligence platform that supports sustainable farming, enhances commercialization, and enables evidence-based governance in Gandaki Province.
+
+**3.2 Specific Objectives**
+*   To empower farmers with **AI-driven disease detection** (achieving 95%+ accuracy) for instant diagnosis and treatment.
+*   To provide **localized, real-time weather and climate advisories** based on altitude and traditional calendars.
+*   To centralize agricultural data into a **government web dashboard** for real-time monitoring of crop patterns and climate stress zones.
+*   To support policymakers with **evidence-based insights** for planning interventions and allocating subsidies.
+*   To enhance **market intelligence** by offering price predictions and cost-benefit analysis to optimize selling decisions.
+*   To ensure **multi-modal accessibility** (Mobile Web, WhatsApp, SMS, Voice) to bridge the digital divide.
+
+### 4. Scope of Project
+
+**4.1 Mobile Application (Farmer Interface)**
+*   **AI Diagnostics:** Image capture functionality for instant plant disease detection and treatment recommendations.
+*   **Climate Adaptation:** Real-time weather alerts, frost/flood warnings, and crop suitability analysis.
+*   **Market Intelligence:** Access to current market prices, demand trends, and predictive analytics for optimal selling times.
+*   **Data Input:** Simple interfaces for farmers to report crop status, sowing dates, and yield estimates.
+*   **Communication:** Integration with WhatsApp Business API, SMS, and Voice calls for offline accessibility and wider reach.
+
+**4.2 Web Application (Government/Admin Interface)**
+*   **Live Dashboard:** Visualization of what farmers are growing today, not last year.
+*   **Data Analytics:** Real-time integration of crop, soil, and climate data to identify stress zones.
+*   **Market Analysis:** Regional prediction of shortages and surpluses to aid in export/import planning.
+*   **Governance Tools:** Modules for transparent subsidy planning, monitoring, and reporting.
+*   **Early Warning Systems:** Centralized monitoring of climate risks (landslides, droughts) to issue alerts to specific regions.
+
+### 5. System Architecture & Design
+
+This section outlines the visual structure of AgriSathi.
+
+#### **Figure 5.1: High-Level System Architecture Diagram**
+*[Instruction for drawing: Create a diagram divided into three layers.]*
+
+1.  **Presentation Layer (Top):**
+    *   Icons for **Farmer Mobile App** (Smartphone) and **Government Web Dashboard** (Laptop).
+    *   Show connection lines to "WhatsApp/SMS Gateway" representing multi-modal access.
+2.  **Application Layer (Middle):**
+    *   Central Node: **AgriSathi Core Server**.
+    *   Sub-nodes branching out:
+        *   **AI Engine:** (Image Recognition, Disease Diagnosis).
+        *   **Analytics Engine:** (Market Prediction, Yield Forecasting).
+        *   **Alert System:** (Weather/Disaster warnings).
+3.  **Data Layer (Bottom):**
+    *   Databases represented as cylinders:
+        *   **Farmer Database** (Profiles, Crop History).
+        *   **Knowledge Base** (Disease Library, Treatment Plans).
+        *   **External APIs** (Weather Services, Market Prices).
+
+---
+
+#### **Figure 5.2: Entity Relationship Diagram (ERD)**
+*[Instruction for drawing: Create a database schema diagram showing the following relationships.]*
+
+*   **Entities:**
+    *   `User` (Attributes: User_ID, Name, Role [Farmer/Admin], Phone, Location).
+    *   `Farm` (Attributes: Farm_ID, User_ID, Area, Altitude, Soil_Type).
+    *   `Crop_Data` (Attributes: Crop_ID, Farm_ID, Crop_Type, Planting_Date, Status).
+    *   `Disease_Log` (Attributes: Log_ID, Crop_ID, Image_Path, AI_Result, Confidence_Score).
+    *   `Advisory` (Attributes: Advisory_ID, Region_ID, Type [Weather/Market], Message, Date).
+    *   `Market_Data` (Attributes: Price_ID, Crop_Name, Location, Price_Per_Kg, Date).
+*   **Relationships:**
+    *   `User` (1) ----< (N) `Farm`
+    *   `Farm` (1) ----< (N) `Crop_Data`
+    *   `Crop_Data` (1) ----< (N) `Disease_Log`
+    *   `Advisory` (1) ----< (N) `User` (Many-to-Many relationship linking users to specific alerts).
+
+---
+
+### 6. Methodology & Workflow
+
+#### **Figure 6.1: AI Disease Detection Flowchart (User Side)**
+*[Instruction for drawing: Create a flowchart with the following logic flow.]*
+
+1.  **Start:** Farmer opens Mobile App.
+2.  **Input:** Select "Scan Crop" option.
+3.  **Action:** Capture Photo of affected leaf/plant.
+4.  **Decision:** Internet Connection Available?
+    *   *Yes:* Send image to Server for processing.
+    *   *No:* Use On-Device AI Model (Offline Mode).
+5.  **Process:** AI Model analyzes image features against Disease Database.
+6.  **Decision:** Disease Detected?
+    *   *Yes:* Identify Disease (e.g., Late Blight) & Retrieve Treatment from Knowledge Base.
+    *   *No:* Label as "Healthy" or "Unknown" (Request Expert Review).
+7.  **Output:** Display Result + Treatment Recommendation + Fertilizer Advice.
+8.  **End:** Save record to Farmer History.
+
+---
+
+#### **Figure 6.2: System Data Flow Diagram (DFD) - Context Level**
+*[Instruction for drawing: A simple circle in the center representing the "AgriSathi System" with arrows pointing to and from external entities.]*
+
+*   **Central Process:** AgriSathi System.
+*   **Entity 1: Farmer**
+    *   *Input:* Crop Images, Farm Status, Location.
+    *   *Output:* Disease Diagnosis, Weather Alerts, Market Prices.
+*   **Entity 2: Government Official**
+    *   *Input:* Subsidy Rules, Advisory Notices.
+    *   *Output:* Reports, Live Dashboards, Analytics.
+*   **Entity 3: External Systems (Weather/Market APIs)**
+    *   *Input:* Raw Weather Data, Daily Market Rates.
+    *   *Output:* Processed Forecast Data.
+
+---
+
+#### **Figure 6.3: Project Gantt Chart**
+*[Instruction for drawing: A bar chart representing the timeline over 10 months.]*
+
+| Task Name | Month 1 | Month 2 | Month 3 | Month 4 | Month 5 | Month 6 | Month 7 | Month 8 | Month 9 | Month 10 |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Requirement Analysis** | ██ | | | | | | | | | |
+| **AI Model Training** | | ██ | ██ | | | | | | | |
+| **UI/UX Design** | | | ██ | | | | | | | |
+| **Mobile App Dev** | | | | ██ | ██ | ██ | | | | |
+| **Web Dashboard Dev**| | | | | ██ | ██ | ██ | | | |
+| **Integration & API** | | | | | | | ██ | ██ | | |
+| **Testing (UAT)** | | | | | | | | | ██ | |
+| **Final Deployment** | | | | | | | | | | ██ |
+
+*(Note: The bars above (██) represent the active duration of each task.)*
+
+### 7. Literature Review
+
+| S.N. | Study | Findings (Key Points) |
+| :--- | :--- | :--- |
+| 1 | **Digital Nepal Framework** (GoN, 2019) | Emphasizes smart agriculture as a national priority and highlights the need for real-time agricultural data systems. |
+| 2 | **Adoption of ICT in Agriculture** (FAO, 2021) | Early warning systems reduce crop losses by 30–40%, and mobile-based platforms significantly increase outreach in rural areas. |
+| 3 | **Adoption of Digital Agriculture in Nepal** (Kathmandu University, 2022) | Farmers strongly prefer location-specific advisories over generic ones; trust in digital systems increases when recommendations are localized. |
+| 4 | **AI in Agriculture Applications** (McKinsey & Company, 2023) | AI-based analytics improve crop monitoring and yield prediction; image-based disease detection effectively reduces dependency on manual experts. |
+
+### 8. Expected Outcome
+
+AgriSathi aims to create profound impact aligning with "Public-Private Collaboration for Effective Agriculture Commercialization."
+
+*   **For Farmers:** Reduced crop losses through rapid AI disease detection; increased income through market intelligence; and improved resilience to climate shocks via localized early warnings.
+*   **For the Government:** A shift from reactive to proactive governance; ability to plan interventions based on live, reliable data; and improved transparency in subsidy distribution.
+*   **For the Province:** A robust agricultural value chain that minimizes waste, maximizes profit, and ensures food security through a data-driven approach.
+
+### 9. References
+
+1.  Government of Nepal. (2019). *Digital Nepal Framework*.
+2.  FAO. (2021). *Adoption of ICT in Agriculture*.
+3.  Kathmandu University. (2022). *Adoption of Digital Agriculture in Nepal*.
+4.  McKinsey & Company. (2023). *AI in Agriculture Applications*.
