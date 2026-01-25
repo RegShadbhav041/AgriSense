@@ -1,0 +1,90 @@
+
+
+# Final Year Project Proposal: “Scream Go Hero” Replication with AI/ML-Driven Voice Control
+
+## Title of the Project  
+Development of an Adaptive Voice-Controlled Platformer: “Chichauu” with AI/ML-Enhanced Voice Recognition and Dynamic Difficulty Adjustment  
+
+## Introduction / Background  
+“Scream Go Hero” is a viral mobile game in which players control a ninja character’s jumps by varying the loudness of their voice into the device microphone. Soft speech moves the character forward, while shouting produces higher jumps to clear gaps and avoid pitfalls. This simple yet engaging mechanic leverages real-time audio input to drive gameplay, offering a novel alternative to traditional touch or button controls [[0](https://play.google.com/store/apps/details?id=com.ketchapp.screamhero&hl=en_US)]. Despite its popularity, the original implementation exhibits limitations in voice recognition robustness across accents and background noise, and it lacks personalized difficulty scaling, which can lead to player frustration or disengagement. This project proposes to replicate and enhance “Scream Go Hero” using Java and XML as the core development languages on the Android platform, integrating Artificial Intelligence (AI) and Machine Learning (ML) techniques to create a more adaptive, inclusive, and engaging voice-controlled gaming experience.
+
+## Problem Statement  
+The original “Scream Go Hero” game, while innovative, suffers from two primary shortcomings:  
+- **Voice Recognition Variability:** The built-in speech recognizer often misinterprets voice inputs in noisy environments or for non-native accents, resulting in inconsistent jump heights and unfair gameplay.  
+- **Static Difficulty:** All players encounter the same sequence of platforms and gaps, irrespective of their skill level or voice control proficiency. Novice players may find the game too challenging, whereas experienced players can quickly lose interest due to predictability.  
+
+These issues undermine replayability and accessibility. This project aims to address them by:  
+1. Developing a custom audio-processing pipeline that normalizes and classifies voice amplitude more reliably across diverse acoustic conditions.  
+2. Embedding an ML-driven adaptive difficulty system that dynamically adjusts platform spacing and gap sizes based on real-time player performance metrics.  
+
+## Objectives of the Project  
+1. Replicate the core voice-controlled jump mechanics of “Scream Go Hero” in Java/XML for Android.  
+2. Implement a robust voice amplitude detection and normalization module to handle varying microphone sensitivities and background noise.  
+3. Integrate a lightweight ML model (e.g., a decision tree or small neural network) to map processed audio features to consistent jump heights.  
+4. Develop an adaptive difficulty algorithm that analyzes player success rates and adjusts level generation parameters accordingly.  
+5. Evaluate the enhanced game through user studies to quantify improvements in accessibility, engagement, and replay value compared to the original.
+
+## Literature Review (brief)  
+Voice-controlled games have evolved from simple command-based interfaces to nuanced amplitude-driven mechanics. Early work by [Author] explored pitch-based control in music games, demonstrating the feasibility of real-time audio input for gameplay. “Scream Go Hero” exemplifies amplitude-driven platforming, capitalizing on modern smartphones’ built-in microphones and speech APIs [[0](https://play.google.com/store/apps/details?id=com.ketchapp.screamhero&hl=en_US)]. However, standard speech recognizers are optimized for linguistic content rather than continuous amplitude measurement, leading to the inaccuracies observed. Research in audio classification has shown that custom feature extraction (e.g., root mean square energy, zero-crossing rate) combined with supervised learning models can significantly improve robustness in noisy environments [[1](https://apps.apple.com/us/app/scream-go-hero/id1212039074)]. In parallel, procedural content generation (PCG) and dynamic difficulty adjustment (DDA) have been studied extensively to tailor game challenges to individual players, enhancing both retention and satisfaction [[2](https://abdo.itch.io/scream-go-hero)]. This project synthesizes these two strands—robust audio-driven control and AI-driven DDA—into a cohesive implementation.
+
+## Proposed Methodology / System Design  
+The system will be architected into four main modules:  
+
+1. **Audio Capture & Preprocessing**  
+   - Capture raw PCM audio via Android’s `AudioRecord` API.  
+   - Compute frame-wise root mean square (RMS) energy and apply noise-gate thresholding to suppress ambient noise.  
+   - Normalize RMS values to a [0, 1] range relative to calibrated ambient and peak levels.  
+
+2. **Voice Amplitude Classification**  
+   - Extract features (normalized RMS, zero-crossing rate) over sliding windows.  
+   - Employ a pre-trained TensorFlow Lite model (a small feed-forward neural network or decision tree) to classify input frames into discrete jump levels (e.g., low, medium, high).  
+   - Map classification output to in-game jump velocity.  
+
+3. **Game Engine & Physics**  
+   - Implement a 2D platformer physics loop in Java using `SurfaceView` or `Canvas`.  
+   - Handle character movement, gravity, collision detection, and scoring.  
+   - Generate platform layouts based on parameters from the Difficulty Manager.  
+
+4. **Adaptive Difficulty Manager**  
+   - Track player performance metrics (success rate, average jump height accuracy, consecutive failures).  
+   - Use a rule-based or reinforcement-learning agent to adjust platform spacing and gap sizes.  
+   - Ensure smooth difficulty transitions to maintain player engagement.  
+
+The modules will communicate via well-defined interfaces, allowing iterative development and testing of each component.
+
+## Tools and Technologies to be Used  
+- **Languages:** Java (game logic), XML (layouts).  
+- **IDE:** Android Studio.  
+- **Audio Processing:** Android `AudioRecord`, FFT libraries (if needed).  
+- **ML Framework:** TensorFlow Lite for on-device inference.  
+- **UI/Rendering:** Custom `SurfaceView` or OpenGL ES (if advanced graphics required).  
+- **Version Control:** Git.  
+- **Testing:** Android Unit Tests, Espresso for UI, manual user studies.
+
+## Expected Outcomes  
+1. A fully functional Android game replicating “Scream Go Hero” core mechanics.  
+2. A voice amplitude classification model with ≥90% accuracy in controlled environments and ≥75% in 50 dB background noise.  
+3. Dynamic difficulty adjustment that increases average session length by ≥20% compared to static levels.  
+4. Comprehensive test reports and user study data demonstrating improved accessibility and engagement.  
+5. Project documentation including design specs, model training procedures, and user manuals.
+
+## Project Timeline (Gantt Chart or Schedule)  
+| Task                               | Weeks 1-2 | Weeks 3-4 | Weeks 5-6 | Weeks 7-8 | Weeks 9-10 | Weeks 11-12 |
+|------------------------------------|-----------|-----------|-----------|-----------|------------|-------------|
+| Setup & Requirements               | ████████  |           |           |           |            |             |
+| Audio Pipeline Development         |           | ████████  | ████████  |           |            |             |
+| Game Engine Implementation         |           |           | ████████  | ████████  |            |             |
+| ML Model Training & Integration    |           |           |           | ████████  | ████████  |             |
+| Adaptive Difficulty Algorithm      |           |           |           |           | ████████  |             |
+| Testing & User Studies             |           |           |           |           |           | ████████  |
+| Documentation & Final Report       |           |           |           |           |           | ████████  |
+
+## Conclusion  
+By combining robust audio processing with on-device ML and adaptive difficulty algorithms, this project aims to elevate “Scream Go Hero” from a novelty into a polished, inclusive gaming experience. The integration of AI/ML not only addresses the original’s technical limitations but also showcases the potential of intelligent systems to enhance interactive entertainment. The methodology and outcomes will serve as a reference for future voice-controlled game development, emphasizing accessibility and player-centric design.
+
+## References  
+[0] Scream Go Hero – Apps on Google Play. https://play.google.com/store/apps/details?id=com.ketchapp.screamhero&hl=en_US  
+
+[1] Scream Go Hero – App Store. https://apps.apple.com/us/app/scream-go-hero/id1212039074  
+
+[2] Scream Go Hero by Abdo – Itch.io. https://abdo.itch.io/scream-go-hero
